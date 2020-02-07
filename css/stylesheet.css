@@ -1,1 +1,48 @@
+:root {
+  --primaryColor: #90a4ae;
+  --primaryLightColor: #c1d5e0;
+  --primaryDarkColor: #62757f;
+  --secondaryColor: #ff6f00;
+  --secondaryLightColor: #ffa040;
+  --secondaryDarkColor: #c43e00;
+  --primaryTextColor: #000000;
+  --secondaryTextColor: #000000;
+}
 
+* {
+  font-family: Arial;
+}
+body {
+  background-color: var(--primaryLightColor);
+}
+.header {
+  margin-top: 0;
+  padding-top: 10px;
+  border: 0;
+  text-align: center;
+  background-color: var(--primaryColor);
+  color: var(--primaryTextColor);
+}
+.search {
+  float: right;
+}
+.footer {
+  font-family: sans-serif;
+  font-size: 10px;
+  color: var(--primaryLightColor);
+  opacity: 0.75;
+  align: right;
+}
+.controls a {
+  width: 25px;
+  height: 25px;
+  margin: 10px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
+  background-color: var(--secondaryLightColor);
+  border-radius: 50px;
+  color: var(--secondaryColor);
+  font-size: 40px;
+  text-decoration: none;
+  float: right;
+  text-align: center;
+}

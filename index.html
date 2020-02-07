@@ -1,20 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style media="screen">
-    <link type="text/css" rel="stylesheet" href="./css/stylesheet.css">
-  </style>
-  <script type="text/javascript">
-    <link rel="stylesheet" href="./js/script.js">
-  </script>
+  <link href="./css/stylesheet.css" type="text/css" rel="stylesheet" />
+  <script src="./js/jquery-3.4.1.js" type="text/javascript"></script>
+  <script src="./js/script.js" type="text/javascript"></script>
+  <meta name="theme-color" content="#62757f">
 </head>
 <body>
-  <head>
-    <h1>Address Book Coding Challenge</h1>
-  </head>
+  <header>
+    <div class="header">
+      <h1>Address Book Coding Challenge</h1>
+    </div>
+  </header>
   <main>
+    <div class="search">
+      <p>Search Contacts: <input type="text" name="searchfield" value="enter searchphrase">
+      </p>
+      <!-- Searchbar -->
 
+    </div>
+    <div class="contacts">
+      <h2>Contact List</h2>
+      <div id="contacts_table">
+        You don't have any contacts :*-(
+      </div>
+      <!-- Table with adresses -->
+    </div>
+    <div class="new_adress">
+      <p>New Contact:</p>
+      <input id="newFirstName" type="text" name="First Name" value="First Name">
+      <input id="newSurname" type="text" name="Surname" value="surname">
+      <input id="newPhone" type="text" name="Phone" value="Phone">
+      <input id="newAddress" type="text" name="Address" value="Address">
+      <!-- Input fields for new adress -->
+    </div>
+    <div class="controls">
+      <a href="#">+</a>
+      <a href="#">-</a>
+      <!-- Controls to add/delete adresses -->
+    </div>
   </main>
   <footer class="footer"> (c) 2020 by Stefan Huckschlag </footer>
+  <script type="text/javascript">
+
+    addAddress("testi","Testmann");
+    addAddress("Hans","Testmann");
+    addAddress("Klaus","Testmann");
+    showContactList();
+  </script>
 </body>
 </html>
