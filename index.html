@@ -35,15 +35,27 @@
       <!-- Input fields for new adress -->
     </div>
     <div class="controls">
+      <button id="addContactButton">+</button>
+      <button id="removeContactButton">-</button>
+      <button id="resetContactButton">Reset Contacts</button>
+      <button id="editContactButton">Edit Contacts</button>
+<!--      
       <a href="#">+</a>
       <a href="#">-</a>
       <a href="#" id="resetButton">reset</a>
+-->
       <!-- Controls to add/delete adresses -->
     </div>
   </main>
   <footer class="footer"> (c) 2020 by Stefan Huckschlag </footer>
   <script type="text/javascript">
-    //let resetButton = $();
+    $('#resetContactButton').on('click', resetContacts);
+    $('#addContactButton').on('click', function() {
+      addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
+      //console.log($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val())
+    });
+    //$('#addContactButton').on('click', addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val()));
+    console.log($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
     resetContacts();
     showContactList();
   </script>

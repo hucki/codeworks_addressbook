@@ -39,15 +39,19 @@ body {
   bottom: 10px;
 }
 .controls a {
-  width: 100px;
+  width: 25px;
   height: 25px;
   margin: 10px 10px 10px 10px;
   padding: 10px 10px 10px 10px;
   background-color: var(--secondaryLightColor);
   border-radius: 50px;
   color: var(--secondaryColor);
-  font-size: 40px;
+  font-size: 25px;
+  font-weight: bold;
   text-decoration: none;
   float: right;
   text-align: center;
+}
+#resetButton {
+    width: 100px;
 }
