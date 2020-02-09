@@ -67,7 +67,16 @@ function addAddress(name,surname,phone,address) {
   addressBook[addressId] = new AddressEntry(name,surname,phone,address);
   showContactList();
 }
+function deleteAddress(id) {
 
+}
+
+function showNewAddressForm() {
+  $('#newAddressForm').removeAttr('hidden');
+}
+function hideNewAddressForm() {
+  $('#newAddressForm').attr('hidden');
+}
 function resetContacts() {
   addressBook = [];
   addAddress('John','Doe', '+34 601 465 366', 'Friedrichstr. 76, 10117 Berlin', );
