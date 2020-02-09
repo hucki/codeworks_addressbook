@@ -3,6 +3,12 @@ class AdressEntry {
     this._name = name;
     this._surname = surname;
   }
+  get name() {
+    return this._name;
+  }
+  get surname() {
+    return this._surname;
+  }
   set phone(phone) {
     this._phone = phone;
   }
@@ -15,30 +21,29 @@ let numberOfContacts = 0;
 let addressBook = [];
 let contactsTable;
 let contactsTableHtml;
-//let newContactsTable = document.createElement("<table>");
-//let newContactsRow = document.createElement("<tr>");
 
 function showContactList() {
   numberOfContacts = addressBook.length;
-  contactsTable = document.getElementById("contacts_table");
   if(numberOfContacts > 0) {
-    //contactsTable.appendChild(newContactsTable);
-    //contactsTable.innerHTML = `<table>`;
-    contactsTableHtml = $('<table>').addClass('actualContactList');
-    contactsTable.append(contactsTableHtml);
-    /*
-    for(let i = 0; i < numberOfContacts; i++) {
-      //contactsTable.innerHTML.append(`<tr> ${addressBook[i]._name} ${addressBook[i]._surname} </tr>`);
-      let tableRow = $('<tr>').addClass('Row').text(`${addressBook[i]._name} ${addressBook[i]._surname}`);
-      contactsTableHtml.append(tableRow);
-      //contactsTableHtml = contactsTableHtml + `${addressBook[i]._name} ${addressBook[i]._surname} <br>`;
+    $('#contacts_table').text('');
+/*
+    $('<table>')
+      .addClass('actualContactList')
+      .appendTo('#contacts_table');
+*/
+    $('<tr>').appendTo($('<thead>').appendTo($('<table>').addClass('actualContactList').appendTo('#contacts_table')));
+    for (let [key, value] of Object.entries(addressBook[0])) {
+      $('<td>').text(`${key}`).appendTo('tr');
     }
-    //contactsTableHtml = contactsTableHtml + `End List: <br>`;
-    //contactsTable.innerHTML.append(`</table>`);
-    //contactsTable.innerHTML = contactsTableHtml;
-    */
+    for(let i = 0; i < numberOfContacts; i++) {
+      $('<tr>').addClass((i%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+i).appendTo('.actualContactList');
+      for (let [key, value] of Object.entries(addressBook[i])) {
+        $('<td>').text(`${value}`).appendTo('#contact_'+i);
+      }
+    }
+
   } else {
-    contactsTableHtml.innerHTML = "no Contacts found!";
+    $('#contacts_table').text('no Contacts found!');
   }
 
 }
@@ -46,4 +51,15 @@ function showContactList() {
 function addAddress(name,surname,phone,address) {
   let addressId = addressBook.length;
   addressBook[addressId] = new AdressEntry(name,surname);
+}
+
+function resetContacts() {
+  addressBook = [];
+  addAddress('John','Doe');
+  addAddress('Jane','Smith');
+  addAddress('Max','Müller');
+  addressBook[0].address = 'Friedrichstraße 76, 10117 Berlin';
+  addressBook[0].phone = '+34 601 465 366';
+
+  showContactList();
 }
