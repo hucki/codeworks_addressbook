@@ -26,23 +26,40 @@
       </div>
       <!-- Table with adresses -->
     </div>
-    <button id="newContactButton">add new Contact</button>
-    <form id="newAddressForm">
-      <!--<label for="newFirstName">First Name</label>-->
-      <input id="newFirstName" type="text" name="First Name" label="First Name" value=""><br>
-      <!--<label for="newSurname">Surname</label>-->
-      <input id="newSurname" type="text" name="Surname" value=""><br>
-      <!--<label for="newPhone">Phone</label>-->
-      <input id="newPhone" type="text" name="Phone" value=""><br>
-      <!--<label for="newAddress">Address</label>-->
-      <input id="newAddress" type="text" name="Address" value=""><br>
-      <button id="addContactButton" type="submit">Submit</button>
-      <!-- <button id="removeContactButton">-</button> -->
-      <!-- Input fields for new adress -->
-    </form>
+    <!-- <form id="newAddressForm">-->
+    <table id="actualContactList">
+      <thead>
+        <tr>
+          <td><input id="checkAll" type="checkbox" value="0" name="checkAll"></td>
+          <td>First Name</td>
+          <td>Surname</td>
+          <td>Phone Number</td>
+          <td>Address</td>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+      <tfoot>
+          <td></td>
+          <!--<label for="newFirstName">First Name</label>-->
+          <td><input id="newFirstName" type="text" name="First Name" label="First Name" value=""></td>
+          <!--<label for="newSurname">Surname</label>-->
+          <td><input id="newSurname" type="text" name="Surname" value=""></td>
+          <!--<label for="newPhone">Phone</label>-->
+          <td><input id="newPhone" type="text" name="Phone" value=""></td>
+          <!--<label for="newAddress">Address</label>-->
+          <td><input id="newAddress" type="text" name="Address" value=""></td>
+          <td><button id="addContactButton">Add</button></td>
+          <!-- <button id="removeContactButton">-</button> -->
+          <!-- Input fields for new adress -->
+      </tfoot>
+    </table>
+    <!--</form>-->
     <div class="controls">
       <button id="resetContactButton">Reset Contacts</button>
-      <button id="editContactButton">Edit Contacts</button>
+      <button id="deleteContactButton">Delete selected Contact(s)</button>
+      <!--<button id="editContactButton">Edit Contacts</button>-->
 <!--
       <a href="#">+</a>
       <a href="#">-</a>
@@ -54,23 +71,40 @@
   <footer class="footer"> (c) 2020 by Stefan Huckschlag </footer>
   <script type="text/javascript">
     // Delete contacts
+    $('#checkAll').change(function(event) {
+      $(':checkbox').each(function(){
+        $(this).prop('checked',$('#checkAll').prop('checked'));
+      })
+    })
+
+    $(':checkbox').change(function(event) {
+      if($(this)!=$('#checkAll') && $(this).prop('checked')===false) {
+        $('#checkAll').prop('checked',false);
+      }
+    })
+
+/*
+    $('tbody button').on('click', function(event) {
+      event.preventDefault();
+      //event.stopPropagation();
+      //event.stopImmediatePropagation();
+      console.log('Tada!');
+    });
+*/
     // hide searchbar, when 0 contacts
     // edit single contacts
     $('#searchfield').keyup(liveSearch);
-    $('#newAddressForm').hide();
     $('#resetContactButton').on('click', resetContacts);
-    $('#newContactButton').on('click', showNewAddressForm);
-
-
-    //$('td').change()
-    $('#newAddressForm').on('submit', function(event) {
+    $('#addContactButton').on('click', function(event) {
+    //$('#newAddressForm').on('submit', function(event) {
       event.preventDefault();
+      console.log(event);
       if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
         addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
-        hideNewAddressForm();
       } else {
         alert('Please input data in at least one given field.');
       }
+
     });
 
 

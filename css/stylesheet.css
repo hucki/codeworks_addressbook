@@ -1,12 +1,15 @@
 :root {
-  --primaryColor: #90a4ae;
-  --primaryLightColor: #c1d5e0;
-  --primaryDarkColor: #62757f;
-  --secondaryColor: #ff6f00;
-  --secondaryLightColor: #ffa040;
-  --secondaryDarkColor: #c43e00;
-  --primaryTextColor: #000000;
-  --secondaryTextColor: #ffffff;
+  --primaryColor: #0d47a1;
+  --primaryLightColor: #5472d3;
+  --primaryLightColorAlpha: #5472d380;
+  --primaryDarkColor: #002171;
+  --primaryDarkColorAlpha: #00217180;
+  --secondaryColor: #b0bec5;
+  --secondaryLightColor: #e2f1f8;
+  --secondaryDarkColor: #808e95;
+  --secondaryDarkColorAlpha: #808e9580;
+  --primaryTextColor: #ffffff;
+  --secondaryTextColor: #000000;
 }
 
 * {
@@ -19,24 +22,31 @@ body {
   padding-top: 10px;
   border: 0;
   border-radius: 2px;
-  box-shadow: 0 0 10px 0 rgba(255,123,16,.54);
+  box-shadow: 0 0 10px 0 var(--primaryDarkColorAlpha);
   text-align: center;
-  background-color: var(--secondaryColor);
-  color: var(--secondaryTextColor);
+  background-color: var(--primaryColor);
+  color: var(--primaryTextColor);
 }
 thead {
   font-weight: bold;
-  color: var(--primaryLightColor);
-  background-color: var(--primaryDarkColor);
+  color: var(--secondaryLightColor);
+  background-color: var(--secondaryDarkColor);
 }
 .even td {
-  background-color: var(--primaryLightColor);
+  background-color: var(--secondaryLightColor);
 }
 .odd td {
 }
+.deleteX {
+  font-weight: bold;
+  color: var(--primaryDarkColorAlpha);
+}
+.deleteX:hover {
+  color: darkred;
+}
 .found {
   font-weight: bold;
-  background-color: var(--secondaryLightColor);
+  background-color: var(--primaryLightColorAlpha);
 }
 
 .search {
@@ -45,7 +55,7 @@ thead {
 .footer {
   font-family: sans-serif;
   font-size: 10px;
-  color: var(--primaryDarkColor);
+  color: var(--secondaryDarkColor);
   opacity: 0.75;
   position: absolute;
   bottom: 10px;
