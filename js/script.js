@@ -16,6 +16,7 @@ class AddressEntry {
 };
 
 let addressBook = [];
+let addressBookDeleted = []; 
 let numberOfContacts = addressBook.length;
 let contactsTable;
 let contactsTableHtml;
@@ -26,13 +27,11 @@ function showContactList() {
     $('#contacts_table').text('');
     $('#actualContactList tbody').html('');
     for(let i = 0; i < numberOfContacts; i++) {
-      //(i===0?$('<tbody>').appendTo('.actualContactList'):null);
       $('<tr>').addClass((i%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+i).appendTo('#actualContactList tbody');
       $('<td>').addClass('checker').html(`<input id="check_${i}" type="checkbox" value="${i}" name="check_${i}">`).appendTo('#contact_'+i);
       for (let [key, value] of Object.entries(addressBook[i])) {
         $('<td>').text(`${value}`).appendTo('#contact_'+i);
       }
-      //$('<td>').html(`<button id="delete_${i}" class="deleteX">x</button>`).appendTo('#contact_'+i);
     }
   } else {
     $('#contacts_table').text('no Contacts found!');
@@ -47,9 +46,12 @@ function addAddress(name,surname,phone,address) {
   showContactList();
 }
 
-function deleteAddress(id) {
+function deleteContacts(ids) {
 
+  addressBook.splice(id);
+  showContactList();
 }
+
 
 function liveSearch() {
   let foundContacts = [];
