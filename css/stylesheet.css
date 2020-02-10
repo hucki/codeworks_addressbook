@@ -6,13 +6,28 @@
   --secondaryLightColor: #ffa040;
   --secondaryDarkColor: #c43e00;
   --primaryTextColor: #000000;
-  --secondaryTextColor: #000000;
+  --secondaryTextColor: #ffffff;
 }
 
 * {
   font-family: Arial;
 }
 body {
+}
+.header {
+  margin-top: 0;
+  padding-top: 10px;
+  border: 0;
+  border-radius: 2px;
+  box-shadow: 0 0 10px 0 rgba(255,123,16,.54);
+  text-align: center;
+  background-color: var(--secondaryColor);
+  color: var(--secondaryTextColor);
+}
+thead {
+  font-weight: bold;
+  color: var(--primaryLightColor);
+  background-color: var(--primaryDarkColor);
 }
 .even td {
   background-color: var(--primaryLightColor);
@@ -23,14 +38,7 @@ body {
   font-weight: bold;
   background-color: var(--secondaryLightColor);
 }
-.header {
-  margin-top: 0;
-  padding-top: 10px;
-  border: 0;
-  text-align: center;
-  background-color: var(--primaryColor);
-  color: var(--primaryTextColor);
-}
+
 .search {
   float: right;
 }
