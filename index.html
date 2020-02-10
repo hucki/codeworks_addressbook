@@ -3,7 +3,7 @@
 <head>
   <link href="./css/stylesheet.css" type="text/css" rel="stylesheet" />
   <script src="./js/jquery-3.4.1.js" type="text/javascript"></script>
-  <script src="./js/script.js" type="text/javascript"></script>
+  <script src="./js/script.js" type="text/javascript" charset="utf-8"></script>
   <meta name="theme-color" content="#62757f">
 </head>
 <body>
@@ -14,7 +14,7 @@
   </header>
   <main>
     <div class="search">
-      <p>Search Contacts: <input type="text" name="searchfield" value="enter searchphrase">
+      <p>Search Contacts: <input type="text" name="searchfield" id="searchfield" value="">
       </p>
       <!-- Searchbar -->
 
@@ -27,7 +27,7 @@
       <!-- Table with adresses -->
     </div>
     <button id="newContactButton">add new Contact</button>
-    <form id="newAddressForm" hidden>
+    <form id="newAddressForm">
       <label for="newFirstName">First Name</label>
       <input id="newFirstName" type="text" name="First Name" label="First Name" value=""><br>
       <label for="newSurname">Surname</label>
@@ -36,8 +36,8 @@
       <input id="newPhone" type="text" name="Phone" value=""><br>
       <label for="newAddress">Address</label>
       <input id="newAddress" type="text" name="Address" value=""><br>
-      <button id="addContactButton" type="submit">save contact</button>
-      <button id="removeContactButton">-</button>
+      <button id="addContactButton" type="submit">Submit</button>
+      <!-- <button id="removeContactButton">-</button> -->
       <!-- Input fields for new adress -->
     </form>
     <div class="controls">
@@ -53,19 +53,25 @@
   </main>
   <footer class="footer"> (c) 2020 by Stefan Huckschlag </footer>
   <script type="text/javascript">
+    $('#searchfield').keyup(liveSearch);
+    $('#newAddressForm').hide();
     $('#resetContactButton').on('click', resetContacts);
-    $('#newContactButton').on('click', function() {
-      showNewAddressForm();
-    });
+    $('#newContactButton').on('click', showNewAddressForm);
 
-    $("#newAddressForm").on("submit", function(event) {
+
+    //$('td').change()
+    $('#newAddressForm').on('submit', function(event) {
       event.preventDefault();
-      addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
-      //hideNewAddressForm();
+      if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
+        addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
+        hideNewAddressForm();
+      } else {
+        alert('Please input data in at least one given field.');
+      }
     });
 
 
-    resetContacts();
+    //resetContacts();
     showContactList();
   </script>
 </body>

@@ -50,7 +50,8 @@ function showContactList() {
       $('<td>').text(`${key}`.substring(1,key.length)).appendTo('tr');
     }
     for(let i = 0; i < numberOfContacts; i++) {
-      $('<tr>').addClass((i%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+i).appendTo('.actualContactList');
+      (i===0?$('<tbody>').appendTo('.actualContactList'):null);
+      $('<tr>').addClass((i%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+i).appendTo('.actualContactList tbody');
       for (let [key, value] of Object.entries(addressBook[i])) {
         $('<td>').text(`${value}`).appendTo('#contact_'+i);
       }
@@ -65,22 +66,45 @@ function showContactList() {
 function addAddress(name,surname,phone,address) {
   let addressId = addressBook.length;
   addressBook[addressId] = new AddressEntry(name,surname,phone,address);
+  $('#newAddressForm').find('input[type=text]').val('');
   showContactList();
 }
+
 function deleteAddress(id) {
 
 }
 
+function liveSearch() {
+  let searchValue = $(this).val().toLowerCase();
+  if(searchValue != '') {
+    $('.actualContactList tbody tr td').each(function(){
+      let findInText = $(this).text().toLowerCase();
+      if (findInText.indexOf(searchValue) >= 0) {
+        let foundValue = $(this).text().substr(findInText.indexOf(searchValue), searchValue.length);
+        let highlightText = $(this).text();
+        $(this).html(highlightText.replace(foundValue, `<span class="found">${foundValue}</span>`));
+      } else {
+        $(this).html($(this).text());
+      }
+    })
+  } else {
+    $('.actualContactList tbody tr td').each(function(){
+      $(this).html($(this).text());
+    });
+  }
+console.log(searchValue);
+}
+
 function showNewAddressForm() {
-  $('#newAddressForm').removeAttr('hidden');
+  $('#newAddressForm').slideDown();
 }
 function hideNewAddressForm() {
-  $('#newAddressForm').attr('hidden');
+  $('#newAddressForm').slideUp();
 }
 function resetContacts() {
   addressBook = [];
   addAddress('John','Doe', '+34 601 465 366', 'Friedrichstr. 76, 10117 Berlin', );
-  addAddress('Jane','Smith', '+34 601 465 366', 'Carrer d\'Àvila, 27, 08005 Barcelona');
+  addAddress('Jane','Smith', '+34 601 465 366', `Carrer d'Àvila, 27, 08005 Barcelona`);
   addAddress('Max','Mad');
 
   showContactList();

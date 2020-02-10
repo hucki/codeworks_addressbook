@@ -19,6 +19,10 @@ body {
 }
 .odd td {
 }
+.found {
+  font-weight: bold;
+  background-color: var(--secondaryLightColor);
+}
 .header {
   margin-top: 0;
   padding-top: 10px;
@@ -37,21 +41,4 @@ body {
   opacity: 0.75;
   position: absolute;
   bottom: 10px;
-}
-.controls a {
-  width: 25px;
-  height: 25px;
-  margin: 10px 10px 10px 10px;
-  padding: 10px 10px 10px 10px;
-  background-color: var(--secondaryLightColor);
-  border-radius: 50px;
-  color: var(--secondaryColor);
-  font-size: 25px;
-  font-weight: bold;
-  text-decoration: none;
-  float: right;
-  text-align: center;
-}
-#resetButton {
-    width: 100px;
 }
