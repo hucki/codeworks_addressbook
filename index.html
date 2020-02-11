@@ -27,6 +27,7 @@
       <!-- Table with adresses -->
     </div>
     <!-- <form id="newAddressForm">-->
+    <div id="confirmedMessage" class="confirmation" style="display: none;"></div>
     <table id="actualContactList">
       <thead>
         <tr>
@@ -56,10 +57,20 @@
   </main>
   <footer class="footer"> (c) 2020 by Stefan Huckschlag </footer>
   <script type="text/javascript">
-    // Delete contacts
+
+    // ::: ToDo :::
     // add delete undo
     // hide searchbar, when 0 contacts
     // edit single contacts
+    // use #confirmedMessage for all messages
+    // put all functions in script.js
+
+    // ::: Cleanup :::
+    // order themed functions
+    // order css
+    // remove unused functions/vars...
+    // merge dev back to master
+
 
     $('#checkAll').change(function(event) {
       $(':checkbox').each(function(){
@@ -74,36 +85,45 @@
     })
 
     $('#searchfield').keyup(liveSearch);
+
+
     $('#resetContactButton').on('click', resetContacts);
     $('#deleteContactButton').on('click', function(event) {
+      //console.log(addressBook);
       let contactsToDelete = [];
       $(':checkbox').each(function(){
         ($(this).prop('checked')===true) ? contactsToDelete.push($(this).attr('id').replace('check_','')):null;
-        addressBookDeleted.push(addressBook.splice(1,1));
+        //console.log(contactsToDelete);
+        //addressBookDeleted.push(addressBook.splice(1,1));
         //$(this).attr('id').replace('check_','')
       })
-
-      console.log(contactsToDelete);
-      console.log(addressBookDeleted);
-      console.log(addressBook);
-      $('<div>').text('contacts deleted. Undo').hide().appendTo('body').fadeIn();
+      let deleteCounter = 0;
+      contactsToDelete.forEach((item, i) => {
+        addressBookDeletedArray.push(addressBook.splice(item-deleteCounter,1));
+        deleteCounter++;
+      });
+      addressBookDeletedArray.forEach((item, i) => {
+        addressBookDeleted.push(item[0]);
+      });
+      addressBook.forEach((item, i) => {
+        console.log(item);
+      });
+      addressBookDeleted.forEach((item, i) => {
+        console.log('deleted' + item);
+      });
+      $('#confirmedMessage').text(`${(deleteCounter>0?deleteCounter:'No')} contact${(deleteCounter>1?'s':'')} deleted.`).slideDown();
+      setTimeout(function () {
+        $('#confirmedMessage').slideUp();
+      }, 2000);;
       showContactList();
-      
+
 
 
       //deleteContacts();
     });
-    $('#addContactButton').on('click', function(event) {
-    //$('#newAddressForm').on('submit', function(event) {
-      event.preventDefault();
-      console.log(event);
-      if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
-        addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
-      } else {
-        alert('Please input data in at least one given field.');
-      }
-
-    });
+    // add contact handler
+    $('input[type=text]').not('#searchfield').keyup(addContact);
+    $('#addContactButton').on('click', addContact);
 
     //resetContacts();
     showContactList();

@@ -16,7 +16,8 @@ class AddressEntry {
 };
 
 let addressBook = [];
-let addressBookDeleted = []; 
+let addressBookDeleted = [];
+let addressBookDeletedArray = [];
 let numberOfContacts = addressBook.length;
 let contactsTable;
 let contactsTableHtml;
@@ -35,6 +36,7 @@ function showContactList() {
     }
   } else {
     $('#contacts_table').text('no Contacts found!');
+    $('#actualContactList tbody').html('');
   }
 
 }
@@ -44,6 +46,17 @@ function addAddress(name,surname,phone,address) {
   addressBook[addressId] = new AddressEntry(name,surname,phone,address);
   $('#actualContactList').find('input[type=text]').val('');
   showContactList();
+}
+
+function addContact(event) {
+  event.preventDefault();
+  if ( (event.type === 'keyup' && event.which === 13) || event.type === 'click' ) {
+    if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
+      addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
+    } else {
+      alert('Please input data in at least one given field.');
+    }
+  }
 }
 
 function deleteContacts(ids) {
