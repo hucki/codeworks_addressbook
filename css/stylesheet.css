@@ -11,26 +11,39 @@
   --primaryTextColor: #ffffff;
   --secondaryTextColor: #000000;
 }
-@media screen and (max-width: 550px) {
+@media screen and (min-width: 801px) {
+  table {
+    font-size: 1em;
+  }
   h1 {
-    font-size: 20px;
+    font-size: 2.6em;
+  }
+}
+@media screen and (max-width: 800px) {
+  body {
+    margin: 0;
+  }
+  h1 {
+    font-size: 5vw;
   }
   table {
-    font-size: 8px;
+    font-size: 2vw;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  h1 {
+    font-size: 5vw;
+  }
+  table {
+    font-size: 0.7em;
   }
   button {
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 40px;
+    min-height: 40px;
   }
  }
- @media screen and (max-width: 800px) {
-   body {
-     margin: 0;
-   }
-   table {
-     font-size: 10px;
-   }
- }
+
 * {
   font-family: Arial;
 }
@@ -44,57 +57,87 @@ body {
   margin: 0 auto;
   border-radius: 0px;
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
   align-items: center;
   box-shadow: 0 2px 5px 0 var(--primaryDarkColorAlpha);
   text-align: center;
   background-color: var(--primaryColor);
   color: var(--primaryTextColor);
 }
-
-main {
+.search {
   width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
-}
-.beforeContentTable, .controls {
-  width: 100%;
-  display: flex;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  flex-wrap: wrap;
-}
-.contentHeading, .controlsLeft {
-  width: 35%;
-
-}
-.search, .controlsRight {
-
-  width: 65%;
   text-align: right;
 }
+h1 {
+  margin-block-end: 0;
+  width: 100%;
+}
+main {
+  width: 100%;
+  padding-bottom: 50px;
+}
+.contentTable {
+  max-width: 1300px;
+  max-height: 600px;
+  margin: 0 auto;
+  overflow: auto;
+  display: flex;
+
+}
+
 h2 {
   font-size: 1.5em;
   margin-block-start: 0.5em;
   margin-block-end: 0.5em;
 }
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
 }
+thead tr {
+
+}
 thead {
   color: var(--secondaryLightColor);
   background-color: var(--secondaryDarkColor);
+}
+tbody {
+  height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .even td {
   background-color: var(--secondaryLightColor);
 }
 .odd td {
 }
+
+.controls {
+  width: 100%;
+  max-width: 1300px;
+  display: flex;
+  margin: 0 auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+}
+.controlsLeft {
+  width: 35%;
+}
+.controlsRight {
+  width: 65%;
+  text-align: right;
+}
+
+tfoot {
+  position: relative;
+  bottom: 50px;
+  background-color: var(--primaryLightColorAlpha);
+}
 table input[type="text"]{
-  display: none;
-  width:98%;
+  width:  98%;
 }
 
 .found {
@@ -109,8 +152,8 @@ table input[type="text"]{
   font-size: 10px;
   color: var(--secondaryDarkColor);
   opacity: 0.75;
-  position: absolute;
-  bottom: 10px;
+  position: fixed;
+  bottom: 0px;
 }
 .confirmation {
   width: 250px;

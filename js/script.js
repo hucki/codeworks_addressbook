@@ -15,15 +15,25 @@ class AddressEntry {
   set address(address)  {this._address = address;}
 };
 
+const useAddButton = false;
+const maxPerPage = 100;
+
 let addressBook = [];
 let addressBookDeleted = [];
 let addressBookDeletedArray = [];
-const maxPerPage = 25;
 let pageNr = 1;
 let numberOfContacts = addressBook.length;
-let numberOfContactsPage = 25;
+let numberOfContactsPage = 0;
 let contactsTable;
 let contactsTableHtml;
+
+function initApp(){
+  if(useAddButton){
+    $('#actualContactList').find('input[type=text]').attr('style','display: none');
+  } else {
+    $('#actualContactList').find('button').attr('style','display: none');
+  }
+}
 
 function showContactList() {
   $('.controlsRight').find('button').prop( "disabled", true );
@@ -39,7 +49,7 @@ function showContactList() {
     $('#contacts_table').text('no Contacts found!');
     $('#actualContactList tbody').html('');
   }
-
+  $('#contentTable').scrollTop(200);
 }
 
 function addTableRow(addressId) {
@@ -58,7 +68,9 @@ function addAddress(name,surname,phone,address) {
 }
 
 function showContactInput(event){
-  $('#actualContactList').find('input[type=text]').show();
+  $('.contentTable').scrollTop($('#actualContactList').height());
+  $('#newFirstName').focus();
+  //$('#actualContactList').find('input[type=text]').show();
 /*
   $('table :input[type=text]').each(function() {
     $(this).slideDown();
@@ -70,7 +82,8 @@ function addContact(event) {
   if ( (event.type === 'keyup' && event.which === 13) || event.type === 'click' ) {
     if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
       addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
-      $('#actualContactList').find('input[type=text]').hide();
+      $('.contentTable').scrollTop($('#actualContactList').height());
+      useAddButton ? $('#actualContactList').find('input[type=text]').hide() : null;
     } else {
       alert('Please input data in at least one given field.');
     }
@@ -112,38 +125,55 @@ function liveSearch() {
 
 function resetContacts() {
   addressBook = [];
-  addAddress('Gabi','Müller', '+49 30 465 366', 'Friedrichstr. 76, 10117 Berlin');
-  addAddress('John','Doe', '+34 601 465 366', `Carrer d'Àvila, 27, 08005 Barcelona`);
-  addAddress('Max','Mad','','The Thunderdome, Down Under');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('Jack','Mayne','+11 234 567 89','Los Angeles');
-  addAddress('Jill','Payne','+11 234 567 89','Los Angeles');
-  addAddress('Peter','Cayne','+11 234 567 89','Los Angeles');
-  addAddress('Paul','Dayne','+11 234 567 89','Los Angeles');
-  addAddress('Mary','Layne','+11 234 567 89','Los Angeles');
-  addAddress('Jimbo','Jayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Bayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Fayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
-  addAddress('John','Wayne','+11 234 567 89','Los Angeles');
+  addAddress('Cody','Codeworks', '+34 601 465 366', `Carrer d'Àvila, 27, 08005 Barcelona`);
+  addAddress('Cliff','Huxtable','+1 555 123456','10 Stigwood Avenue, New York City')
+  addAddress('Sirius','Black','+1 555 123489','12 Grimmauld Place, London, UK')
+  addAddress('Spongebob','Squarepants','+1 555 123522','124 Conch Street, Bikini Bottom, Pacific Ocean')
+  addAddress('Lily','Munster','+1 555 123555','1313 Mockingbird Lane, Mockingbird Heights, USA')
+  addAddress('Halliwell','House','+1 555 123588','1329 Carroll Ave, Los Angeles, California')
+  addAddress('Buffy','Summers','+1 555 123621','1630 Revello Drive, Sunnydale, CA')
+  addAddress('Doc','Brown','+1 555 123654','1640 Riverside Drive, Hill Valley, California')
+  addAddress('Sherlock','Holmes','+1 555 123687','221B Baker Street, London, UK')
+  addAddress('Fox','Mulder','+1 555 123720','2630 Hegal Place, Apt. 42, Alexandria, Virginia, 23242')
+  addAddress('Peter','Griffin','+1 555 123753','31 Spooner Street, Quahog, Rhode Island')
+  addAddress('Dana','Scully','+1 555 123786','3170 W. 53 Rd. #35, Annapolis, Maryland')
+  addAddress('Raymond','Barone','+1 555 123819','320 Fowler Street, Lynbrook, New York')
+  addAddress('Clark','Kent','+1 555 123852','344 Clinton St., Apt. 3B, Metropolis, USA')
+  addAddress('Dudley','Dursley','+1 555 123885','4 Privet Drive, Little Whinging, Surrey, UK')
+  addAddress('Tim','Taylor','+1 555 123918','510 Glenview, Detroit, Michigan')
+  addAddress('Jon','Arbuckle','+1 555 123951','711 Maple Street, USA')
+  addAddress('Roseanne','Conners','+1 555 123984','714 Delaware, Lanford IL')
+  addAddress('Al','Bundy','+1 555 124017','9764 Jeopardy Lane, Chicago, Illinois')
+  addAddress('Jerry','Seinfeld','+1 555 124050','Apartment 5A, 129 West 81st Street, New York, New York')
+  addAddress('Tyler','Durden','+1 555 124083','537 Paper Street, Bradford 19808 ')
+  addAddress('Homer','Simpson','+1 555 124116','742 Evergreen Terrace, Springfield')
+  addAddress('Kate','Tanner','+1 555 124149','167 Hemdale Street, Los Angeles, California ')
+  addAddress('Hercule','Poirot','+1 555 124182','Apt. 56B, Whitehaven Mansions, Sandhurst Square, London W1')
+
+  addAddress('Cody','Codeworks', '+34 601 465 366', `Carrer d'Àvila, 27, 08005 Barcelona`);
+  addAddress('Cliff','Huxtable','+1 555 123456','10 Stigwood Avenue, New York City')
+  addAddress('Sirius','Black','+1 555 123489','12 Grimmauld Place, London, UK')
+  addAddress('Spongebob','Squarepants','+1 555 123522','124 Conch Street, Bikini Bottom, Pacific Ocean')
+  addAddress('Lily','Munster','+1 555 123555','1313 Mockingbird Lane, Mockingbird Heights, USA')
+  addAddress('Halliwell','House','+1 555 123588','1329 Carroll Ave, Los Angeles, California')
+  addAddress('Buffy','Summers','+1 555 123621','1630 Revello Drive, Sunnydale, CA')
+  addAddress('Doc','Brown','+1 555 123654','1640 Riverside Drive, Hill Valley, California')
+  addAddress('Sherlock','Holmes','+1 555 123687','221B Baker Street, London, UK')
+  addAddress('Fox','Mulder','+1 555 123720','2630 Hegal Place, Apt. 42, Alexandria, Virginia, 23242')
+  addAddress('Peter','Griffin','+1 555 123753','31 Spooner Street, Quahog, Rhode Island')
+  addAddress('Dana','Scully','+1 555 123786','3170 W. 53 Rd. #35, Annapolis, Maryland')
+  addAddress('Raymond','Barone','+1 555 123819','320 Fowler Street, Lynbrook, New York')
+  addAddress('Clark','Kent','+1 555 123852','344 Clinton St., Apt. 3B, Metropolis, USA')
+  addAddress('Dudley','Dursley','+1 555 123885','4 Privet Drive, Little Whinging, Surrey, UK')
+  addAddress('Tim','Taylor','+1 555 123918','510 Glenview, Detroit, Michigan')
+  addAddress('Jon','Arbuckle','+1 555 123951','711 Maple Street, USA')
+  addAddress('Roseanne','Conners','+1 555 123984','714 Delaware, Lanford IL')
+  addAddress('Al','Bundy','+1 555 124017','9764 Jeopardy Lane, Chicago, Illinois')
+  addAddress('Jerry','Seinfeld','+1 555 124050','Apartment 5A, 129 West 81st Street, New York, New York')
+  addAddress('Tyler','Durden','+1 555 124083','537 Paper Street, Bradford 19808 ')
+  addAddress('Homer','Simpson','+1 555 124116','742 Evergreen Terrace, Springfield')
+  addAddress('Kate','Tanner','+1 555 124149','167 Hemdale Street, Los Angeles, California ')
+  addAddress('Hercule','Poirot','+1 555 124182','Apt. 56B, Whitehaven Mansions, Sandhurst Square, London W1')
 
   showContactList();
 }
