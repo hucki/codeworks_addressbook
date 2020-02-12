@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Codeworks Coding Assignment - Address Book Coding Challenge by Stefan Huckschlag</title>
   <link href="./css/stylesheet.css" type="text/css" rel="stylesheet" />
   <script src="./js/jquery-3.4.1.js" type="text/javascript"></script>
   <script src="./js/script.js" type="text/javascript" charset="utf-8"></script>
   <meta name="theme-color" content="#62757f">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 <body>
   <header>
@@ -13,66 +15,134 @@
     </div>
   </header>
   <main>
-    <div class="search">
-      <p>Search Contacts: <input type="text" name="searchfield" id="searchfield" value="">
-      </p>
-      <!-- Searchbar -->
-
-    </div>
-    <div class="contacts">
-      <h2>Contact List</h2>
-      <div id="contacts_table">
-        You don't have any contacts :*-(
+    <div id="confirmedMessage" class="confirmation" style="display: none;"></div>
+    <div class="beforeContentTable">
+      <div class="contentHeading">
+        <!-- <h2>Contact List</h2> -->
       </div>
-      <!-- Table with adresses -->
+      <div class="search">
+        Search Contacts: <input type="text" name="searchfield" id="searchfield" size="10">
+      </div>
     </div>
-    <button id="newContactButton">add new Contact</button>
-    <form id="newAddressForm">
-      <!--<label for="newFirstName">First Name</label>-->
-      <input id="newFirstName" type="text" name="First Name" label="First Name" value=""><br>
-      <!--<label for="newSurname">Surname</label>-->
-      <input id="newSurname" type="text" name="Surname" value=""><br>
-      <!--<label for="newPhone">Phone</label>-->
-      <input id="newPhone" type="text" name="Phone" value=""><br>
-      <!--<label for="newAddress">Address</label>-->
-      <input id="newAddress" type="text" name="Address" value=""><br>
-      <button id="addContactButton" type="submit">Submit</button>
-      <!-- <button id="removeContactButton">-</button> -->
-      <!-- Input fields for new adress -->
-    </form>
+    <!-- <form id="newAddressForm">-->
+    <div class="contentTable" style="overflow-x:auto;">
+      <table id="actualContactList">
+        <thead>
+          <tr>
+            <td><input id="checkAll" type="checkbox" value="0" name="checkAll"></td>
+            <td>First Name</td>
+            <td>Surname</td>
+            <td>Phone Number</td>
+            <td>Address</td>
+          </tr>
+        </thead>
+        <tbody>
+
+
+        </tbody>
+        <tfoot>
+            <td></td>
+            <td><input id="newFirstName" type="text" name="First Name" label="First Name" value="" size="15"></td>
+            <td><input id="newSurname" type="text" name="Surname" value="" size="15"></td>
+            <td><input id="newPhone" type="text" name="Phone" value=""></td>
+            <td><input id="newAddress" type="text" name="Address" value=""><button id="addContactButton">Add</button></td>
+            <td></td>
+        </tfoot>
+      </table>
+    </div>
     <div class="controls">
       <button id="resetContactButton">Reset Contacts</button>
-      <button id="editContactButton">Edit Contacts</button>
-<!--
-      <a href="#">+</a>
-      <a href="#">-</a>
-      <a href="#" id="resetButton">reset</a>
--->
-      <!-- Controls to add/delete adresses -->
+      <button id="deleteContactButton">Delete selected Contact(s)</button>
     </div>
   </main>
   <footer class="footer"> (c) 2020 by Stefan Huckschlag </footer>
   <script type="text/javascript">
-    // Delete contacts
+  /*
+    Build a simple address book application using HTML, CSS, JavaScript and jQuery.
+    done -> It is a single page, that opens in the browser,
+    done -> where the user can create new contacts,
+    done -> delete contacts,
+    done -> and use a search bar to find existing contacts.
+    done -> Each contact should have a name, surname, phone number, and address.
+    done -> The data doesn’t need to be persisted when the browser page is closed.
+  */
+
+    // ::: ToDo :::
+    // add delete undo
     // hide searchbar, when 0 contacts
     // edit single contacts
-    $('#searchfield').keyup(liveSearch);
-    $('#newAddressForm').hide();
-    $('#resetContactButton').on('click', resetContacts);
-    $('#newContactButton').on('click', showNewAddressForm);
+    // use #confirmedMessage for all messages
+    // put all functions in script.js
+    // check/uncheck in liveSearch()
 
+    // ::: Cleanup :::
+    // responsiveness
+    // order themed functions
+    // order css
+    // remove unused functions/vars...
+    // merge dev back to master
 
-    //$('td').change()
-    $('#newAddressForm').on('submit', function(event) {
-      event.preventDefault();
-      if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
-        addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
-        hideNewAddressForm();
-      } else {
-        alert('Please input data in at least one given field.');
+    // handle checkboxes
+    $('#actualContactList').change(function(event) {
+      if(event.target.name==='checkAll') {
+        $(':checkbox').each(function(){
+          $(this).prop('checked',$('#checkAll').prop('checked'));
+        })
       }
-    });
 
+      $(':checkbox').not('#checkAll').each(function(event) {
+        if($(this).prop('checked')===false) {
+          $('#checkAll').prop('checked', false);
+          return;
+        } else {
+          $('#checkAll').prop('checked', true);
+        }
+      })
+    })
+
+    $('#searchfield').keyup(liveSearch);
+
+
+    $('#resetContactButton').on('click', resetContacts);
+    $('#deleteContactButton').on('click', function(event) {
+      //console.log(addressBook);
+      let contactsToDelete = [];
+      $(':checkbox').not('#checkAll').each(function(){
+        ($(this).prop('checked')===true) ? contactsToDelete.push($(this).attr('id').replace('check_','')):null;
+        //console.log(contactsToDelete);
+        //addressBookDeleted.push(addressBook.splice(1,1));
+        //$(this).attr('id').replace('check_','')
+      })
+      let deleteCounter = 0;
+      contactsToDelete.forEach((item, i) => {
+        addressBookDeletedArray.push(addressBook.splice(item-deleteCounter,1));
+        deleteCounter++;
+      });
+      addressBookDeletedArray.forEach((item, i) => {
+        addressBookDeleted.push(item[0]);
+      });
+      addressBook.forEach((item, i) => {
+        console.log(item);
+      });
+      addressBookDeleted.forEach((item, i) => {
+        console.log('deleted' + item);
+      });
+      $('#confirmedMessage').text(`${(deleteCounter>0?deleteCounter:'No')} contact${(deleteCounter>1?'s':'')} deleted.`).slideDown();
+      $(':checkbox').each(function(){
+        $(this).prop('checked',false);
+      })
+      setTimeout(function () {
+        $('#confirmedMessage').slideUp();
+      }, 2000);;
+      showContactList();
+
+
+
+      //deleteContacts();
+    });
+    // add contact handler
+    $('input[type=text]').not('#searchfield').keyup(addContact);
+    $('#addContactButton').on('click', addContact);
 
     //resetContacts();
     showContactList();
