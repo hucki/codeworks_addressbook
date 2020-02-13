@@ -33,6 +33,12 @@ function initApp(){
   } else {
     $('#actualContactList').find('button').attr('style','display: none');
   }
+  showContactList();
+  resizeContactList();
+}
+function resizeContactList() {
+  let maxHeight = $( window ).height() - $('.header').height()-70;
+  $('.contentTable').attr('style','max-height: '+maxHeight+'px');
 }
 
 function showContactList() {
@@ -66,6 +72,22 @@ function addAddress(name,surname,phone,address) {
   addTableRow(addressId);
   $('#actualContactList').find('input[type=text]').val('');
 }
+function checkboxUpdate() {
+  if(event.target.name==='checkAll') {
+    $(':checkbox').each(function(){
+      $(this).prop('checked',$('#checkAll').prop('checked'));
+    })
+  }
+
+  $(':checkbox').not('#checkAll').each(function(event) {
+    if($(this).prop('checked')===false) {
+      $('#checkAll').prop('checked', false);
+      return false;
+    } else {
+      $('#checkAll').prop('checked', true);
+    }
+  })
+}
 
 function showContactInput(event){
   $('.contentTable').scrollTop($('#actualContactList').height());
@@ -77,24 +99,70 @@ function showContactInput(event){
   })
 */
 }
+function validatePhonenumber() {
+  let testPattern = /[+]?[(]?[0-9 ]+[)/-]?[0-9 ]*[-]?[0-9 ]*/g;
+  return ($('#newPhone').val().match(testPattern)=== null ? '' : $('#newPhone').val().match(testPattern).join('')) === $('#newPhone').val() ? true : false;
+}
+
 function addContact(event) {
   event.preventDefault();
-  if ( (event.type === 'keyup' && event.which === 13) || event.type === 'click' ) {
+  if ((event.type === 'keyup' && event.which === 13) || event.type === 'click' ) {
     if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
-      addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
-      $('.contentTable').scrollTop($('#actualContactList').height());
-      useAddButton ? $('#actualContactList').find('input[type=text]').hide() : null;
+      if(($('#newPhone').val() && validatePhonenumber())|| $('#newPhone').val().length === 0) {
+        addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
+        $('.contentTable').scrollTop($('#actualContactList').height());
+        useAddButton ? $('#actualContactList').find('input[type=text]').hide() : null;
+      } else {
+        showMessage('No valid Phonenumber. Please check your input.','Alert');
+      }
     } else {
-      alert('Please input data in at least one given field.');
+      showMessage('Please input data in at least one given field.','Alert');
     }
   }
 }
 
-function deleteContacts(ids) {
-  addressBook.splice(id);
+function deleteContacts(event) {
+  //console.log(addressBook);
+  let contactsToDelete = [];
+  $(':checkbox').not('#checkAll').each(function(){
+    ($(this).prop('checked')===true) ? contactsToDelete.push($(this).attr('id').replace('check_','')):null;
+    //console.log(contactsToDelete);
+    //addressBookDeleted.push(addressBook.splice(1,1));
+    //$(this).attr('id').replace('check_','')
+  })
+  let deleteCounter = 0;
+  contactsToDelete.forEach((item, i) => {
+    addressBookDeletedArray.push(addressBook.splice(item-deleteCounter,1));
+    deleteCounter++;
+  });
+  addressBookDeletedArray.forEach((item, i) => {
+    addressBookDeleted.push(item[0]);
+  });
+  addressBook.forEach((item, i) => {
+    console.log(item);
+  });
+  addressBookDeleted.forEach((item, i) => {
+    console.log('deleted' + item);
+  });
+  showMessage(`${(deleteCounter>0?deleteCounter:'No')} contact${(deleteCounter>1?'s':'')} deleted.`,'Confirmation')
+  $(':checkbox').each(function(){
+    $(this).prop('checked',false);
+  })
   showContactList();
+  //deleteContacts();
 }
 
+function showMessage(messageText, messageType, messagePosition) {
+  if(messageType === 'Alert') {
+    $('#confirmedMessage').html('&#x2757; '+messageText);
+  } else {
+    $('#confirmedMessage').text(messageText);
+  }
+  $('#confirmedMessage').attr('style','width: '+(messageText.length*9)+'px').slideDown();
+  setTimeout(function () {
+    $('#confirmedMessage').slideUp();
+  }, 2000);;
+}
 
 function liveSearch() {
   let foundContacts = [];
@@ -102,6 +170,7 @@ function liveSearch() {
   console.log(searchValue);
 
   if(searchValue.length > 0) {
+    $('#searchfield').addClass('searchActive');
     $('#actualContactList tbody tr td').not('.checker').each(function(){
       let findInText = $(this).text().toLowerCase();
       if (findInText.indexOf(searchValue) >= 0) {
@@ -116,6 +185,7 @@ function liveSearch() {
       }
     })
   } else {
+    $('#searchfield').removeClass('searchActive');
     $('#actualContactList tbody tr td').not('.checker').each(function(){
       $(this).html($(this).text());
       $(this).parent().show();
