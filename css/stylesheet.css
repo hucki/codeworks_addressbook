@@ -38,9 +38,12 @@
   table {
     font-size: 0.7em;
   }
+  tfoot input{
+    height: 40px;
+  }
   button {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 48px;
+    min-height: 48px;
   }
  }
 
@@ -71,6 +74,10 @@ body {
 .searchActive {
   background-color: var(--secondaryLightColor);
   font-weight: bold;
+}
+#filterInfo {
+  font-family: sans-serif;
+  font-size: 10px;
 }
 h1 {
   margin-block-end: 0;
@@ -128,10 +135,10 @@ tbody {
   flex-wrap: wrap;
 }
 .controlsLeft {
-  width: 35%;
+  width: 60%;
 }
 .controlsRight {
-  width: 65%;
+  width: 40%;
   text-align: right;
 }
 
@@ -176,8 +183,8 @@ table input[type="text"]{
   margin-left: auto;
   margin-right: auto;
   top: 100px;
-  border-radius: 2px;
-  box-shadow: 0 0 2px 0 var(--primaryDarkColorAlpha);
+  border-radius: 6px;
+  box-shadow: 5px 5px 5px 0 var(--primaryDarkColorAlpha);
   display: flex;
   justify-content: center;
   align-items: center;
