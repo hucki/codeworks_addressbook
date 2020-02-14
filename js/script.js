@@ -226,7 +226,7 @@ function liveSearch() {
     });
   } else {
     resetSearch();
-    $('#actualContactList tbody tr td').not('.checker').each(function(){
+    $('#actualContactList tbody tr td').not('.checker').not('.editCell').each(function(){
       $(this).html($(this).text());
       $(this).parent().show();
     });
