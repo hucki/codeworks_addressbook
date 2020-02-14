@@ -24,13 +24,8 @@ let numberOfContacts = addressBook.length;
 function initApp(){
   showContactList();
   resizeContactList();
-  $('#editContentDiv').show();
-  $('#editContentDiv').hide();
-}
-
-function resizeContactList() {
-  let maxHeight = $( window ).height() - $('.header').height()-$('#showInput').height()-40;
-  $('.contentTable').attr('style','max-height: '+maxHeight+'px');
+  $('#editModal').show();
+  $('#editModal').hide();
 }
 
 function showContactList() {
@@ -40,16 +35,17 @@ function showContactList() {
   numberOfContacts = addressBook.length;
   if(numberOfContacts > 0) {
     $('#contacts_table').text('');
-    $('#actualContactList tbody').html('');
+    $('#contactList tbody').html('');
     for(let i = 0; i < numberOfContacts; i++) {
       addTableRow(i);
     }
   } else {
     $('#contacts_table').text('no Contacts found!');
-    $('#actualContactList tbody').html('');
+    $('#contactList tbody').html('');
   }
   $('#contentTable').scrollTop(200);
   $('#contentTable').find('.editButton').hide();
+
   $('tbody tr td').on('mouseenter', function () {
 
     let thisId = $(this).parent().prop('id').replace('contact_','');
@@ -60,6 +56,21 @@ function showContactList() {
       editDialog(thisId);
     });
   })
+}
+
+function resizeContactList() {
+  let maxHeight = $( window ).height() - $('.header').height()-$('#showInput').height()-40;
+  $('.contentTable').attr('style','max-height: '+maxHeight+'px');
+}
+
+function sortTable (event) {
+  filterKey = event.target.id.toLowerCase().replace('heading','');
+  console.log(filterKey);
+  addressBook.sort(function(a, b) {
+      return a.[filterKey].localeCompare(b.[filterKey])
+  });
+  showContactList();
+
 
 }
 
@@ -69,23 +80,40 @@ function editDialog(thisId) {
   $('#editSurname').val(addressBook[thisId]['surname']);
   $('#editPhone').val(addressBook[thisId]['phone']);
   $('#editAddress').val(addressBook[thisId]['address']);
-  $('#editContentDiv').show();
+  $('#editModal').show();
+  $('#editModal').on('click', function(event) {
+    event.target.id === 'editModal' ? $('#editModal').hide() : null;
+  })
 }
 
 function saveChanges() {
   event.preventDefault;
   let thisId = $('#editId').text();
-  console.log(thisId);
-  addressBook[thisId]['name'] = $('#editFirstName').val();
-  addressBook[thisId]['surname'] = $('#editSurname').val();
-  addressBook[thisId]['phone'] = $('#editPhone').val();
-  addressBook[thisId]['address'] = $('#editAddress').val();
-  $('#editContentDiv').hide();
-  showContactList();
-  showMessage('Changes saved!');
+
+  if($('#editFirstName').val()||$('#editSurname').val()||$('#editPhone').val()||$('#editAddress').val()) {
+    if(($('#editPhone').val() && validatePhonenumber('#editPhone'))|| $('#editPhone').val().length === 0) {
+      addressBook[thisId]['name'] = $('#editFirstName').val();
+      addressBook[thisId]['surname'] = $('#editSurname').val();
+      addressBook[thisId]['phone'] = $('#editPhone').val();
+      addressBook[thisId]['address'] = $('#editAddress').val();
+      $('#editModal').hide();
+      showContactList();
+      showMessage('Changes saved!');
+    } else {
+      showMessage('Not a valid Phonenumber.','Alert');
+    }
+  } else {
+    showMessage('Empty address will not be saved','Alert');
+  }
+
 }
+
+function closeDialog(event) {
+  event.which === 27 ? $('#editModal').hide() : null;
+}
+
 function addTableRow(addressId) {
-  $('<tr>').addClass((addressId%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+addressId).appendTo('#actualContactList tbody');
+  $('<tr>').addClass((addressId%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+addressId).appendTo('#contactList tbody');
   $('<td>').addClass('checker').html(`<input id="check_${addressId}" type="checkbox" value="${addressId}" name="check_${addressId}">`).appendTo('#contact_'+addressId);
   for (let [key, value] of Object.entries(addressBook[addressId])) {
     $('<td>').html(`${value}`).appendTo('#contact_'+addressId);
@@ -97,7 +125,7 @@ function addAddress(name,surname,phone,address) {
   let addressId = addressBook.length;
   addressBook[addressId] = new AddressEntry(name,surname,phone,address);
   addTableRow(addressId);
-  $('#actualContactList').find('input[type=text]').val('');
+  $('#contactList').find('input[type=text]').val('');
 }
 
 function checkboxUpdate() {
@@ -120,22 +148,22 @@ function checkboxUpdate() {
 }
 
 function showContactInput(){
-  $('.contentTable').scrollTop($('#actualContactList').height());
+  $('.contentTable').scrollTop($('#contactList').height());
   $('#newFirstName').focus();
 }
 
-function validatePhonenumber() {
+function validatePhonenumber(fieldId) {
   let testPattern = /[+]?[(]?[0-9 ]+[)/-]?[0-9 ]*[-]?[0-9 ]*/g;
-  return ($('#newPhone').val().match(testPattern)=== null ? '' : $('#newPhone').val().match(testPattern).join('')) === $('#newPhone').val() ? true : false;
+  return ($(fieldId).val().match(testPattern)=== null ? '' : $(fieldId).val().match(testPattern).join('')) === $(fieldId).val() ? true : false;
 }
 
 function addContact(event) {
   event.preventDefault();
   if ((event.type === 'keyup' && event.which === 13) || event.type === 'click' ) {
     if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
-      if(($('#newPhone').val() && validatePhonenumber())|| $('#newPhone').val().length === 0) {
+      if(($('#newPhone').val() && validatePhonenumber('#newPhone'))|| $('#newPhone').val().length === 0) {
         addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
-        $('.contentTable').scrollTop($('#actualContactList').height());
+        $('.contentTable').scrollTop($('#contactList').height());
       } else {
         showMessage('Not a valid Phonenumber.','Alert');
       }
@@ -189,9 +217,9 @@ function undoDelete(){
 function showMessage(text, type='Confirmation') {
   clearTimeout(messageTimeout);
   let content = type === 'Alert' ? '&#x2757; ' + text :  text;
-  $('#confirmedMessage').html(content).attr('style','width: '+(text.length*9)+'px').slideDown('slow');
+  $('#message').html(content).attr('style','width: '+(text.length*9)+'px').slideDown('slow');
   messageTimeout = setTimeout(function () {
-    $('#confirmedMessage').slideUp();
+    $('#message').slideUp();
   }, 2000);;
 }
 
@@ -202,7 +230,7 @@ function liveSearch() {
   if(searchValue.length > 0) {
     $(':checkbox').prop('checked', false);
     $('#searchfield').addClass('searchActive');
-    $('#actualContactList tbody tr td').not('.checker').not('.editCell').each(function(){
+    $('#contactList tbody tr td').not('.checker').not('.editCell').each(function(){
       // find searchValue in each Cell
 
 
@@ -221,12 +249,12 @@ function liveSearch() {
         $('#filterInfo').text(foundContacts.length + ' of ' + addressBook.length + ' entries matched');
       }
     })
-    $('#actualContactList tbody tr td :checkbox').prop('checked',false).filter(function() {
+    $('#contactList tbody tr td :checkbox').prop('checked',false).filter(function() {
       return $(this).parent().parent().prop('style') === 'display: none' ? false : true;
     });
   } else {
     resetSearch();
-    $('#actualContactList tbody tr td').not('.checker').not('.editCell').each(function(){
+    $('#contactList tbody tr td').not('.checker').not('.editCell').each(function(){
       $(this).html($(this).text());
       $(this).parent().show();
     });
