@@ -66,11 +66,12 @@ function resizeContactList() {
 function sortTable (event) {
   filterKey = event.target.id.toLowerCase().replace('heading','');
   console.log(filterKey);
+/*
   addressBook.sort(function(a, b) {
-      return a.[filterKey].localeCompare(b.[filterKey])
+      return a[filterKey].localeCompare(b[filterKey])
   });
   showContactList();
-
+*/
 
 }
 
