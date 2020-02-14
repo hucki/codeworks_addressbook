@@ -18,6 +18,33 @@
     </div>
   </header>
   <div id="confirmedMessage" class="confirmation" style="display: none;"></div>
+  <div id="editContentDiv" style="display:none">
+    <div id="editContent">
+      <table id="editContactList">
+        <thead>
+          <tr>
+            <td>&nbsp;</td>
+            <td>First Name</td>
+            <td>Surname</td>
+            <td>Phone Number</td>
+            <td>Address</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <td id="editId"></td>
+          <td><input id="editFirstName" type="text" name="First Name" label="First Name" value="" size="15"></td>
+          <td><input id="editSurname" type="text" name="Surname" value="" size="15"></td>
+          <td><input id="editPhone" type="text" name="Phone" value=""></td>
+          <td><input id="editAddress" type="text" name="Address" value=""></td>
+          <td></td>
+        </tbody>
+      </table>
+    </div>
+    <div id="editControls">
+      <button id="saveButton">Save Changes</button>
+    </div>
+  </div>
   <main>
     <!-- <form id="newAddressForm">-->
 
@@ -25,11 +52,18 @@
       <table id="actualContactList">
         <thead>
           <tr>
-            <td><input id="checkAll" type="checkbox" value="0" name="checkAll"></td>
+            <!--<td><input id="checkAll" type="checkbox" value="0" name="checkAll"></td>-->
+            <td>
+              <div class="checkContainer">
+                <input id="checkAll" type="checkbox" name="checkAll" checked="checked">
+                <span class="checkmark"></span>
+              </div>
+            </td>
             <td>First Name</td>
             <td>Surname</td>
             <td>Phone Number</td>
             <td>Address</td>
+            <td></td>
           </tr>
         </thead>
         <tbody>
@@ -41,17 +75,19 @@
             <td><input id="newSurname" type="text" name="Surname" value="" size="15" placeholder="new Surname"></td>
             <td><input id="newPhone" type="text" name="Phone" value="" placeholder="new Phonenumber"></td>
             <td><input id="newAddress" type="text" name="Address" value="" placeholder="new Address"></td>
+            <td></td>
         </tfoot>
       </table>
     </div>
+
     <div class="controls">
       <div class="controlsLeft">
         <button id="showInput">+</button>
-        <button id="deleteContactButton">Delete</button>
+        <button id="deleteButton">Delete</button>
         <button id="undoButton">Undo</button>
       </div>
       <div class="controlsRight">
-        <button id="resetContactButton" alt="Resest Contact List with dummy data">Reset DB</button>
+        <button id="resetButton" alt="Resest Contact List with dummy data">Reset DB</button>
         <!--
         <button id="firstPageButton"><<</button>
         <button id="previousPageButton"><</button>
@@ -78,19 +114,19 @@
   */
 
     // ::: ToDo :::
-    // add delete undo
+    // done -> add delete undo
     // hide searchbar, when 0 contacts
     // edit single contacts
     // done -> use #confirmedMessage for all messages
     // done -> put all functions in script.js
-    // check/uncheck in liveSearch()
+    // done -> check/uncheck in liveSearch()
 
     // ::: Cleanup :::
-    // responsiveness
+    // done -> responsiveness
     // order themed functions
     // order css
     // remove unused functions/vars...
-    // merge dev back to master
+    // done -> merge dev back to master
 
     initApp();
 
@@ -98,10 +134,12 @@
     $('#actualContactList').change(checkboxUpdate)
     $('#searchfield').keyup(liveSearch);
     $('#showInput').on('click', showContactInput);
-    $('#resetContactButton').on('click', resetContacts);
-    $('#deleteContactButton').on('click', deleteContacts);
+    $('#resetButton').on('click', resetContacts);
+    $('#deleteButton').on('click', deleteContacts);
     $('#undoButton').on('click', undoDelete);
+    $('#saveButton').on('click', saveChanges);
     $('input[type=text]').not('#searchfield').keyup(addContact);
+
     $( window ).resize(resizeContactList);
 
   </script>

@@ -10,6 +10,7 @@
   --secondaryDarkColorAlpha: #808e9580;
   --primaryTextColor: #ffffff;
   --secondaryTextColor: #000000;
+  --secondaryTextColorAlpha: #00000080;
 }
 @media screen and (min-width: 801px) {
   table {
@@ -45,18 +46,26 @@
     min-width: 48px;
     min-height: 48px;
   }
+  .editButton {
+    font-size: 1em;
+  }
+  input[type=checkbox] {
+    scale: 1.5;
+  }
  }
 
 * {
   font-family: Arial;
 }
 body {
-    margin-top: 0;
+  margin-top: 0;
+  margin: 0 auto;
+  max-width: 900px;
+  min-width: 320px;
 }
 .header {
   margin-top: 0;
   width: 100%;
-  max-width: 1300px;
   margin: 0 auto;
   border-radius: 0px;
   display: flex;
@@ -88,7 +97,6 @@ main {
   padding-bottom: 10px;
 }
 .contentTable {
-  max-width: 1300px;
   max-height: 600px;
   margin: 0 auto;
   overflow: auto;
@@ -124,10 +132,19 @@ tbody {
 }
 .odd td {
 }
-
+.editButton {
+  padding: 0;
+  float: right;
+  font-size: 14px;
+  opacity: 0.75;
+  color: var(--secondaryDarkColor);
+}
+.editButton:hover {
+  opacity: 1;
+  color: var(--secondaryTextColor);
+}
 .controls {
   width: 100%;
-  max-width: 1300px;
   display: flex;
   margin: 0 auto;
   margin-top: 2px;
@@ -158,7 +175,6 @@ table input[type="text"]{
 
 .footer {
   width: 100%;
-  max-width: 1300px;
   display: flex;
   margin: 0 auto;
   margin-bottom: 2px;
@@ -182,13 +198,107 @@ table input[type="text"]{
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  top: 100px;
+  top: 5px;
   border-radius: 6px;
   box-shadow: 5px 5px 5px 0 var(--primaryDarkColorAlpha);
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--primaryTextColor);
+  color: var(--secondaryDarkColor); /*var(--primaryTextColor);*/
   font-style: italic;
-  background-color: var(--primaryLightColor);
+  background-color: #ffffe7; /*var(--primaryLightColor);*/
+}
+#editContentDiv {
+  margin: 0 auto;
+  max-width: inherit;
+  height: 75px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 150px;
+  border-radius: 6px;
+  box-shadow: 5px 5px 5px 0 var(--primaryDarkColorAlpha);
+  justify-content: center;
+  align-items: center;
+  color: var(--secondaryDarkColor); /*var(--primaryTextColor);*/
+  font-style: italic;
+  background-color: var(--secondaryLightColor);
+}
+#editContent {
+  width: 100%;
+}
+#editControls {
+  width: 100%;
+  text-align: right;
+}
+
+/*new Checkbox*/
+/* The container */
+
+.checkContainer {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  padding-left: 0px;
+  margin-bottom: 0px;
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkContainer input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  box-shadow: inset 1px 1px 3px 0 var(--secondaryTextColorAlpha);
+}
+
+/* On mouse-over, add a grey background color */
+.checkContainer:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkContainer input:checked ~ .checkmark {
+  background-color: var(--primaryDarkColorAlpha);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkContainer input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkContainer .checkmark:after {
+  left: 7px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
 }
