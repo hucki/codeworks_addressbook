@@ -54,6 +54,20 @@
   }
  }
 
+@media print {
+  .noPrint {
+    display: none;
+  }
+  button {
+    display: none;
+  }
+  input {
+    display: none;
+  }
+  .contentTable {
+    height: 1200px;
+  }
+}
 * {
   font-family: Arial;
 }

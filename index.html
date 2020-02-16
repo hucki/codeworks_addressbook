@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 <body>
-  <header>
+  <header class="noPrint">
     <div class="header">
       <h1>Address Book Coding Challenge</h1>
         <div class="search">
@@ -16,8 +16,8 @@
         </div>
     </div>
   </header>
-  <div id="message" class="confirmation" style="display: none;"></div>
-  <div id="editModal">
+  <div id="message" class="confirmation noPrint" style="display: none;"></div>
+  <div id="editModal"  class="noPrint">
     <div id="editContainer">
       <div id="editContent">
         <table id="editContactList">
@@ -98,34 +98,8 @@
     </div>
   </footer>
   <script type="text/javascript">
-  /*
-    Build a simple address book application using HTML, CSS, JavaScript and jQuery.
-    done -> It is a single page, that opens in the browser,
-    done -> where the user can create new contacts,
-    done -> delete contacts,
-    done -> and use a search bar to find existing contacts.
-    done -> Each contact should have a name, surname, phone number, and address.
-    done -> The data doesn’t need to be persisted when the browser page is closed.
-  */
-
-    // ::: ToDo :::
-    // done -> add delete undo
-    // postponed -> hide searchbar, when 0 contacts
-    // done ->edit single contacts
-    // done -> use #confirmedMessage for all messages
-    // done -> put all functions in script.js
-    // done -> check/uncheck in liveSearch()
-    // sort table
-
-    // ::: Cleanup :::
-    // done -> responsiveness
-    // order themed functions
-    // order css
-    // remove unused functions/vars...
-    // done -> merge dev back to master
 
     initApp();
-
     // user interaction handling
     $('#contactList').change(checkboxUpdate)
     $('#searchfield').keyup(liveSearch);
@@ -134,6 +108,7 @@
     $('#deleteButton').on('click', deleteContacts);
     $('#undoButton').on('click', undoDelete);
     $('#saveButton').on('click', saveChanges);
+    $('#editContainer input[type=text]').keyup(saveChanges);
     $('#contactListFooter input[type=text]').not('#searchfield').keyup(addContact);
     $('.tableHeading').on('click', sortTable);
 

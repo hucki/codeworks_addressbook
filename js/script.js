@@ -102,13 +102,7 @@ function sortTable (event) {
   } else {
     addressBook.sort((a, b) => (a[`${sortKey}`].localeCompare(b[`${sortKey}`]))*sortFactor);
   }
-/*
-  addressBook.sort(function(a, b) {
-      return a[`${sortKey}`].localeCompare(b[`${sortKey}`])
-  });
-*/
   showContactList();
-
 }
 
 //functions to edit existing contacts
@@ -127,9 +121,8 @@ function editDialog(thisId) {
 function saveChanges() {
   event.preventDefault;
   let thisId = $('#editId').text();
-
-  if($('#editFirstName').val()||$('#editSurname').val()||$('#editPhone').val()||$('#editAddress').val()) {
-    if(($('#editPhone').val() && validatePhonenumber('#editPhone'))|| $('#editPhone').val().length === 0) {
+  if ((event.type === 'keyup' && event.which === 13) || event.type === 'click' ) {
+    if (checkInput($('#editFirstName').val(),$('#editSurname').val(),$('#editPhone').val(),$('#editAddress').val())) {
       addressBook[thisId]['name'] = $('#editFirstName').val();
       addressBook[thisId]['surname'] = $('#editSurname').val();
       addressBook[thisId]['phone'] = $('#editPhone').val();
@@ -137,11 +130,7 @@ function saveChanges() {
       $('#editModal').hide();
       showContactList();
       showMessage('Changes saved!');
-    } else {
-      showMessage('Not a valid Phonenumber.','Alert');
     }
-  } else {
-    showMessage('Empty address will not be saved','Alert');
   }
 }
 
@@ -189,25 +178,33 @@ function showContactInput(){
   $('#newFirstName').focus();
 }
 
-function validatePhonenumber(fieldId) {
-  let testPattern = /[+]?[(]?[0-9 ]+[)/-]?[0-9 ]*[-]?[0-9 ]*/g;
-  return ($(fieldId).val().match(testPattern)=== null ? '' : $(fieldId).val().match(testPattern).join('')) === $(fieldId).val() ? true : false;
-}
-
 function addContact(event) {
   event.preventDefault();
-  if ((event.type === 'keyup' && event.which === 13) || event.type === 'click' ) {
-    if($('#newFirstName').val()||$('#newSurname').val()||$('#newPhone').val()||$('#newAddress').val()) {
-      if(($('#newPhone').val() && validatePhonenumber('#newPhone'))|| $('#newPhone').val().length === 0) {
-        addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
-        $('.contentTable').scrollTop($('#contactList').height());
-      } else {
-        showMessage('Not a valid Phonenumber.','Alert');
-      }
-    } else {
-      showMessage('Please input data before submitting.','Alert');
+  if (event.which === 13) {
+    if (checkInput($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val())) {
+      addAddress($('#newFirstName').val(),$('#newSurname').val(),$('#newPhone').val(),$('#newAddress').val());
+      $('.contentTable').scrollTop($('#contactList').height());
     }
   }
+}
+
+function checkInput(name,surname,phone,address) {
+  if(name||surname||phone||address) {
+    if((phone && validatePhonenumber(phone))|| phone.length === 0) {
+      return true;
+    } else {
+      showMessage('Not a valid Phonenumber.','Alert');
+      return false;
+    }
+  } else {
+    showMessage('Empty address will not be saved','Alert');
+    return false;
+  }
+}
+
+function validatePhonenumber(nr) {
+  let testPattern = /[+]?[(]?[0-9 ]+[)/-]?[0-9 ]*[-]?[0-9 ]*/g;
+  return (nr.match(testPattern)=== null ? '' : nr.match(testPattern).join('')) === nr ? true : false;
 }
 
 function deleteContacts(event) {
