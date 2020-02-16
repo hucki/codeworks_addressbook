@@ -1,10 +1,13 @@
 class AddressEntry {
-  constructor(name = "", surname = "", phone = "", address = "") {
+  constructor(id = 0, name = "", surname = "", phone = "", address = "") {
+    this._id = id;
     this._name = name;
     this._surname = surname;
     this._phone = phone;
     this._address = address;
   }
+  get id()              {return this._id;}
+  // no id setter
   get name()            {return this._name;}
   set name(name)        {this._name = name;}
   get surname()         {return this._surname;}
@@ -64,17 +67,51 @@ function resizeContactList() {
 }
 
 function sortTable (event) {
-  filterKey = event.target.id.toLowerCase().replace('heading','');
-  console.log(filterKey);
+  $('.tableHeading').not('#'+event.target.id).removeClass('sortAsc').removeClass('sortDesc').addClass('sortNot');
+  $('.sortSymbol').html('')
+  let sortKey = event.target.id.toLowerCase().replace('heading','').replace('first','');
+  let sortFactor = 1;
+  let sortClass = event.target.className.split(' ').find(function(item) {
+    return item.substr(0,4) === 'sort';
+  })
+
+  switch(sortClass) {
+    case 'sortNot':
+      $(this).addClass('sortAsc').removeClass('sortNot');
+      sortClass = 'sortAsc';
+      $(this).children().html('&#x25B2;')
+      break;
+    case 'sortAsc':
+      $(this).addClass('sortDesc').removeClass('sortAsc');
+      $(this).children().html('&#x25BC;')
+      sortClass = 'sortDesc';
+      sortFactor = -1;
+      break;
+    case 'sortDesc':
+      $(this).addClass('sortNot').removeClass('sortDesc');
+      $(this).children().html('')
+      sortClass = 'sortNot';
+      sortKey = 'id'
+      break;
+    default:
+      break;
+  };
+
+  if (sortKey === 'id') {
+    addressBook.sort((a, b) => (a[`${sortKey}`]-b[`${sortKey}`]));
+  } else {
+    addressBook.sort((a, b) => (a[`${sortKey}`].localeCompare(b[`${sortKey}`]))*sortFactor);
+  }
 /*
   addressBook.sort(function(a, b) {
-      return a[filterKey].localeCompare(b[filterKey])
+      return a[`${sortKey}`].localeCompare(b[`${sortKey}`])
   });
-  showContactList();
 */
+  showContactList();
 
 }
 
+//functions to edit existing contacts
 function editDialog(thisId) {
   $('#editId').text(thisId);
   $('#editFirstName').val(addressBook[thisId]['name']);
@@ -106,7 +143,6 @@ function saveChanges() {
   } else {
     showMessage('Empty address will not be saved','Alert');
   }
-
 }
 
 function closeDialog(event) {
@@ -117,14 +153,14 @@ function addTableRow(addressId) {
   $('<tr>').addClass((addressId%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+addressId).appendTo('#contactList tbody');
   $('<td>').addClass('checker').html(`<input id="check_${addressId}" type="checkbox" value="${addressId}" name="check_${addressId}">`).appendTo('#contact_'+addressId);
   for (let [key, value] of Object.entries(addressBook[addressId])) {
-    $('<td>').html(`${value}`).appendTo('#contact_'+addressId);
+    key != '_id' ? $('<td>').html(`${value}`).appendTo('#contact_'+addressId) : null;
   }
   $('<td class="editCell">').html('<span class="editButton" style="display:none" id="editButton_' + addressId + '">&#x270E;</span>').appendTo('#contact_'+addressId);
 }
 
 function addAddress(name,surname,phone,address) {
   let addressId = addressBook.length;
-  addressBook[addressId] = new AddressEntry(name,surname,phone,address);
+  addressBook[addressId] = new AddressEntry(addressId,name,surname,phone,address);
   addTableRow(addressId);
   $('#contactList').find('input[type=text]').val('');
 }

@@ -122,6 +122,9 @@ thead {
   color: var(--secondaryLightColor);
   background-color: var(--secondaryDarkColor);
 }
+thead .tableheading {
+
+}
 tbody {
   height: 600px;
   overflow-y: auto;
@@ -193,6 +196,7 @@ table input[type="text"]{
 }
 .confirmation {
   display: none;
+  z-index: 2;
   width: 250px;
   height: 30px;
   position: absolute;
