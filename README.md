@@ -15,19 +15,21 @@ Build a simple address book application using HTML, CSS, JavaScript and jQuery.
 - [x] one step undo after deleting contacts
 - [x] sort contacts table by clicking on header
 - [x] different viewports for different screens + print
+- [x] local storage
 
 
 # ToDo
 
 
 ## Coding
+  - [ ] delete/undo from local storage
   - [x] add delete undo
   - [x] edit single contacts
   - [x] use #confirmedMessage for all messages
   - [x] put all functions in script.js
   - [x] check/uncheck in liveSearch()
   - [x] sort table
-  - [ ] (postponed) hide searchbar, when 0 contacts
+~~- [ ] hide searchbar, when 0 contacts~~
 
 ## Cleanup
   - [x] responsiveness

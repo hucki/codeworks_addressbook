@@ -55,6 +55,10 @@
  }
 
 @media print {
+  main {
+    font-size: 12px;
+    display: block;
+  }
   .noPrint {
     display: none;
   }
@@ -64,8 +68,14 @@
   input {
     display: none;
   }
+  .editButton {
+    display: none;
+  }
   .contentTable {
-    height: 1200px;
+    max-height: 100%;
+  }
+  tfoot {
+    display: none;
   }
 }
 * {
