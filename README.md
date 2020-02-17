@@ -10,6 +10,8 @@ Build a simple address book application using HTML, CSS, JavaScript and jQuery.
 - [x] Each contact should have a name, surname, phone number, and address.
 - [x] The data doesn’t need to be persisted when the browser page is closed.
 
+![Codeworks Address Book - Overview of provided functionality](/img/codeworks_address_book_overview.png)
+
 ## Additional functionality
 - [x] usage of local storage
 - [x] edit contacts in a modal dialog
