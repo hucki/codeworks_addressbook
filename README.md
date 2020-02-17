@@ -31,8 +31,8 @@ Build a simple address book application using HTML, CSS, JavaScript and jQuery.
 - [x] sort table
 
 ## Cleanup
-- [ ] order themed functions
-- [ ] order css
+- [x] order themed functions
+- [x] order css
 - [x] remove unused functions/vars...
 - [x] merge dev back to master
 - [x] add titles to buttons
