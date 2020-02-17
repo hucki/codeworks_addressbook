@@ -42,7 +42,7 @@
         </table>
       </div>
       <div id="editControls">
-        <button id="saveButton">Save Changes</button>
+        <button id="saveButton" title="save your changes to this contact">Save Changes</button>
       </div>
     </div>
   </div>
@@ -77,12 +77,12 @@
 
     <div class="controls">
       <div class="controlsLeft">
-        <button id="showInput">+</button>
-        <button id="deleteButton">Delete</button>
-        <button id="undoButton">Undo</button>
+        <button id="showInput" title="move focus to input fields for new contacts.">+</button>
+        <button id="deleteButton" title="delete marked contacts">Delete</button>
+        <button id="undoButton" title="restore contacts from the last delete process.">Undo</button>
       </div>
       <div class="controlsRight">
-        <button id="resetButton" alt="Resest Contact List with dummy data">Reset DB</button>
+        <button id="resetButton" title="Restore dummy dataset. All manually added contacts and applied changes will be lost.">Reset DB</button>
         <!--
         <button id="firstPageButton"><<</button>
         <button id="previousPageButton"><</button>
@@ -107,13 +107,12 @@
       $('#resetButton').on('click', resetContacts);
       $('#deleteButton').on('click', deleteContacts);
       $('#undoButton').on('click', undoDelete);
-      $('#saveButton').on('click', saveChanges);
-      $('#editContainer input[type=text]').keyup(saveChanges);
+      //$('#saveButton').on('click', saveChanges);
+      //$('#editContainer input[type=text]').keyup(saveChanges);
       $('#contactListFooter input[type=text]').not('#searchfield').keyup(addContact);
       $('.tableHeading').on('click', sortTable);
 
       $(window).keyup(closeDialog);
-      $(window).resize(resizeContactList);
     });
   </script>
 </body>

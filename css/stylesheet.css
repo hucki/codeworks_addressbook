@@ -12,6 +12,16 @@
   --secondaryTextColor: #000000;
   --secondaryTextColorAlpha: #00000080;
 }
+
+@media screen and (min-height: 901px) { .contentTable { max-height: 82vh; } }
+@media screen and (max-height: 900px) { .contentTable { max-height: 81vh; } }
+@media screen and (max-height: 800px) { .contentTable { max-height: 80vh; } }
+@media screen and (max-height: 750px) { .contentTable { max-height: 78vh; } }
+@media screen and (max-height: 700px) { .contentTable { max-height: 75vh; } }
+@media screen and (max-height: 600px) { .contentTable { max-height: 70vh; } }
+@media screen and (max-height: 500px) { .contentTable { max-height: 65vh; } }
+@media screen and (max-height: 400px) { .contentTable { max-height: 60vh; } }
+
 @media screen and (min-width: 801px) {
   table {
     font-size: 1em;
@@ -52,7 +62,7 @@
   input[type=checkbox] {
     scale: 1.5;
   }
- }
+}
 
 @media print {
   main {
@@ -73,6 +83,7 @@
   }
   .contentTable {
     max-height: 100%;
+    overflow: unset;
   }
   tfoot {
     display: none;
@@ -121,7 +132,6 @@ main {
   padding-bottom: 10px;
 }
 .contentTable {
-  max-height: 600px;
   margin: 0 auto;
   overflow: auto;
   display: flex;

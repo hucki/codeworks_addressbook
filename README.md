@@ -1,5 +1,5 @@
 # codeworks_addressbook
-simple Address Book for the Codeworks Coding Assignment
+Address Book for the Codeworks Coding Assignment
 
 ## Original Coding Assignment
 Build a simple address book application using HTML, CSS, JavaScript and jQuery.
@@ -11,29 +11,30 @@ Build a simple address book application using HTML, CSS, JavaScript and jQuery.
 - [x] The data doesn’t need to be persisted when the browser page is closed.
 
 ## Additional functionality
+- [x] usage of local storage
 - [x] edit contacts in a modal dialog
-- [x] one step undo after deleting contacts
-- [x] sort contacts table by clicking on header
+- [x] undo function: restore all contacts from the last delete step (only the last step is restored, function is not persistent over browser refresh)
+- [x] sort contacts table by clicking on header (ascending /descending /original order)
 - [x] different viewports for different screens + print
-- [x] local storage
+
 
 
 # ToDo
 
 
 ## Coding
-  - [ ] delete/undo from local storage
-  - [x] add delete undo
-  - [x] edit single contacts
-  - [x] use #confirmedMessage for all messages
-  - [x] put all functions in script.js
-  - [x] check/uncheck in liveSearch()
-  - [x] sort table
-~~- [ ] hide searchbar, when 0 contacts~~
+- [x] delete/undo from local storage
+- [x] add delete undo
+- [x] edit single contacts
+- [x] use #confirmedMessage for all messages
+- [x] put all functions in script.js
+- [x] check/uncheck in liveSearch()
+- [x] sort table
 
 ## Cleanup
-  - [x] responsiveness
-  - [ ] order themed functions
-  - [ ] order css
-  - [ ] remove unused functions/vars...
-  - [x] merge dev back to master
+- [ ] order themed functions
+- [ ] order css
+- [ ] remove unused functions/vars...
+- [x] merge dev back to master
+- [x] add titles to buttons
+- [x] responsiveness

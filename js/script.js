@@ -1,4 +1,4 @@
-class AddressEntry {
+class Address {
   constructor(id = 0, name = "", surname = "", phone = "", address = "") {
     this._id = id;
     this._name = name;
@@ -20,38 +20,37 @@ class AddressEntry {
 
 let addressBook = [];
 let addressBookDeleted = [];
-let contactsTable;
 let messageTimeout;
-let numberOfContacts = addressBook.length;
+let numberOfRows = 0;
+
+//let contactsTable;
+//let numberOfContacts = addressBook.length;
 
 function initApp(){
-  $('#editModal').show();
-  $('#editModal').hide();
   retrieveFromLocalStorage();
   showContactList();
-  resizeContactList();
 }
 
 function showContactList() {
+  numberOfRows = 0;
   toggleUndoButton();
   toggleDeleteButton();
-  $('.controlsRight').find('button').not('#resetButton').prop('disabled', true );
-  numberOfContacts = addressBook.length;
-  if(numberOfContacts > 0) {
-    $('#contacts_table').text('');
+  //$('.controlsRight').find('button').not('#resetButton').prop('disabled', true );
+  //numberOfContacts = addressBook.length;
+  if(addressBook.length > 0) {
+    //$('#contacts_table').text('');
     $('#contactList tbody').html('');
-    for(let i = 0; i < numberOfContacts; i++) {
-      addTableRow(i);
+    for(let i = 0; i < addressBook.length; i++) {
+      addressBook[i] ? addTableRow(i) : null;
     }
   } else {
-    $('#contacts_table').text('no Contacts found!');
+    //$('#contacts_table').text('no Contacts found!');
     $('#contactList tbody').html('');
   }
   $('#contentTable').scrollTop(200);
   $('#contentTable').find('.editButton').hide();
 
   $('tbody tr td').on('mouseenter', function () {
-
     let thisId = $(this).parent().prop('id').replace('contact_','');
     let editButtonId = '#editButton_'+thisId;
     $('.editButton').not(editButtonId).hide();
@@ -60,11 +59,6 @@ function showContactList() {
       editDialog(thisId);
     });
   })
-}
-
-function resizeContactList() {
-  let maxHeight = $( window ).height() - $('.header').height()-$('#showInput').height()-40;
-  $('.contentTable').attr('style','max-height: '+maxHeight+'px');
 }
 
 function sortTable (event) {
@@ -114,6 +108,8 @@ function editDialog(thisId) {
   $('#editPhone').val(addressBook[thisId]['phone']);
   $('#editAddress').val(addressBook[thisId]['address']);
   $('#editModal').show();
+  $('#saveButton').on('click', saveChanges);
+  $('#editContainer input[type=text]').keyup(saveChanges);
   $('#editModal').on('click', function(event) {
     event.target.id === 'editModal' ? $('#editModal').hide() : null;
   })
@@ -124,10 +120,10 @@ function saveChanges() {
   let thisId = $('#editId').text();
   if ((event.type === 'keyup' && event.which === 13) || event.type === 'click' ) {
     if (checkInput($('#editFirstName').val(),$('#editSurname').val(),$('#editPhone').val(),$('#editAddress').val())) {
-      addressBook[thisId]['name'] = $('#editFirstName').val();
-      addressBook[thisId]['surname'] = $('#editSurname').val();
-      addressBook[thisId]['phone'] = $('#editPhone').val();
-      addressBook[thisId]['address'] = $('#editAddress').val();
+      localStorage.setItem(thisId+'__name', addressBook[thisId]['name'] = $('#editFirstName').val());
+      localStorage.setItem(thisId+'__surname', addressBook[thisId]['surname'] = $('#editSurname').val());
+      localStorage.setItem(thisId+'__phone', addressBook[thisId]['phone'] = $('#editPhone').val());
+      localStorage.setItem(thisId+'__address', addressBook[thisId]['address'] = $('#editAddress').val());
       $('#editModal').hide();
       showContactList();
       showMessage('Changes saved!');
@@ -140,18 +136,19 @@ function closeDialog(event) {
 }
 
 function addTableRow(addressId) {
-  $('<tr>').addClass((addressId%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+addressId).appendTo('#contactList tbody');
+  $('<tr>').addClass((numberOfRows%2 === 0 ? 'even' : 'odd')).attr('id','contact_'+addressId).appendTo('#contactList tbody');
   $('<td>').addClass('checker').html(`<input id="check_${addressId}" type="checkbox" value="${addressId}" name="check_${addressId}">`).appendTo('#contact_'+addressId);
   for (let [key, value] of Object.entries(addressBook[addressId])) {
     key != '_id' ? $('<td>').html(`${value}`).appendTo('#contact_'+addressId) : null;
   }
   $('<td class="editCell">').html('<span class="editButton" style="display:none" id="editButton_' + addressId + '">&#x270E;</span>').appendTo('#contact_'+addressId);
+  numberOfRows++;
 }
 
 function addAddress(name,surname,phone,address) {
   let addressId = addressBook.length;
-  addressBook[addressId] = new AddressEntry(addressId,name,surname,phone,address);
-  addToLocalStorage(addressId, 'regular');
+  addressBook[addressId] = new Address(addressId,name,surname,phone,address);
+  addToLocalStorage(addressBook[addressId]);
   addTableRow(addressId);
   $('#contactList').find('input[type=text]').val('');
 }
@@ -211,20 +208,21 @@ function validatePhonenumber(nr) {
 
 function deleteContacts(event) {
   let contactsToDelete = [];
-  let addressBookDeletedArray = [];
+  //let addressBookDeletedArray = [];
   addressBookDeleted = [];
   $(':checkbox').not('#checkAll').each(function(){
     ($(this).prop('checked')===true) ? contactsToDelete.push($(this).attr('id').replace('check_','')):null;
   })
   let deleteCounter = 0;
   contactsToDelete.forEach((item, i) => {
-    //console.log('item to remove ='+item);
-    //removeFromLocalStorage(item);
-    addressBookDeletedArray.push(addressBook.splice(item-deleteCounter,1));
+    let contactToDelete = addressBook.splice(item-deleteCounter,1)
+    let addressId = contactToDelete[0]['_id'];
+    for (let [key, value] of Object.entries(contactToDelete[0])) {
+      addressBookDeleted[addressId] ? null : addressBookDeleted[addressId] = new Address(addressId,'','','','');
+      addressBookDeleted[addressId][key] = value;
+      localStorage.removeItem(addressId+'_'+key);
+    }
     deleteCounter++;
-  });
-  addressBookDeletedArray.forEach((item, i) => {
-    addressBookDeleted.push(item[0]);
   });
 
   showMessage(`${(deleteCounter>0?deleteCounter:'No')} contact${(deleteCounter>1?'s':'')} deleted.`,'Confirmation')
@@ -236,7 +234,7 @@ function deleteContacts(event) {
 }
 
 function toggleUndoButton() {
-  addressBookDeleted.length > 0 ? $('#undoButton').prop('disabled', false ).text(`Undo (${addressBookDeleted.length})`) : $('#undoButton').prop('disabled', true).text('Undo');
+  addressBookLength(addressBookDeleted) > 0 ? $('#undoButton').prop('disabled', false ).text(`Undo (${addressBookLength(addressBookDeleted)})`) : $('#undoButton').prop('disabled', true).text('Undo');
 }
 
 function toggleDeleteButton() {
@@ -244,12 +242,24 @@ function toggleDeleteButton() {
   checkedVisible > 0 ? $('#deleteButton').prop('disabled', false ).text(`Delete (${checkedVisible})`) : $('#deleteButton').prop('disabled', true).text('Delete');
 }
 
+function addressBookLength(whichAddressBook=addressBook) {
+  if (whichAddressBook.length === 0) {
+    return 0;
+  } else {
+    let abLength = 0
+    for (let i = 0; i<whichAddressBook.length;i++) {
+      whichAddressBook[i] ? abLength++ : null;
+    }
+    return abLength;
+  }
+}
+
 function undoDelete(){
   addressBookDeleted.forEach((item, i) => {
-    //addToLocalStorage(item['_id'], 'deleted');
+    addToLocalStorage(item);
     addressBook.push(item);
   });
-  showMessage(`${(addressBookDeleted.length>0?addressBookDeleted.length:'No')} contact${(addressBookDeleted.length>1?'s':'')} restored.`,'Confirmation')
+  showMessage(`${(addressBookLength(addressBookDeleted)>0?addressBookLength(addressBookDeleted):'No')} contact${(addressBookLength(addressBookDeleted)>1?'s':'')} restored.`,'Confirmation')
   addressBookDeleted = [];
   showContactList();
 }
@@ -272,8 +282,6 @@ function liveSearch() {
     $('#searchfield').addClass('searchActive');
     $('#contactList tbody tr td').not('.checker').not('.editCell').each(function(){
       // find searchValue in each Cell
-
-
       let findInText = $(this).text().toLowerCase();
       if (findInText.indexOf(searchValue) >= 0) {
         // found searchValue in one Cell
@@ -282,11 +290,11 @@ function liveSearch() {
         let highlightText = $(this).text();
         $(this).html(highlightText.replace(foundValue, `<span class="found">${foundValue}</span>`));
         $(this).parent().show();
-        $('#filterInfo').text(foundContacts.length + ' of ' + addressBook.length + ' entries matched');
+        $('#filterInfo').text(foundContacts.length + ' of ' + addressBookLength(addressBook) + ' entries matched');
       } else {
         $(this).html($(this).text());
         (foundContacts.findIndex((element) => element === $(this).parent().attr('id')) < 0) ? $(this).parent().hide() : null;
-        $('#filterInfo').text(foundContacts.length + ' of ' + addressBook.length + ' entries matched');
+        $('#filterInfo').text(foundContacts.length + ' of ' + addressBookLength(addressBook) + ' entries matched');
       }
     })
     $('#contactList tbody tr td :checkbox').prop('checked',false).filter(function() {
@@ -307,22 +315,16 @@ function resetSearch() {
   $('#filterInfo').text('');
 }
 
-function addToLocalStorage(addressId, whichAddressBook = 'regular') {
-  if (whichAddressBook === 'deleted') {
-    for (let [key, value] of Object.entries(addressBookDeleted['_id'][addressId])) {
-      localStorage.setItem(addressId+'_'+key, value);
-    }
-  } else {
-    for (let [key, value] of Object.entries(addressBook[addressId])) {
-      localStorage.setItem(addressId+'_'+key, value);
-    }
+function addToLocalStorage(addressObj) {
+  let addressId = addressObj['_id'];
+  for (let [key, value] of Object.entries(addressObj)) {
+    localStorage.setItem(addressId+'_'+key, value);
   }
 }
 
 function removeFromLocalStorage(addressId) {
   for (let [key, value] of Object.entries(addressBook[addressId])) {
-    localStorage.removeItem(addressId+'_'+key, value);
-    //console.log(localStorage.getItem(addressId+'_'+key));
+    localStorage.removeItem(addressId+'_'+key);
   }
 }
 
@@ -333,8 +335,7 @@ function retrieveFromLocalStorage() {
   resetSearch();
   for (let i = 0; i < localStorage.length; i++) {
     let addressId = localStorage.key(i).split('__')[0]
-    addressBook[addressId] ? null : addressBook[addressId] = new AddressEntry(addressId,'','','','');
-    //console.log(localStorage.key(i).split('__'));
+    addressBook[addressId] ? null : addressBook[addressId] = new Address(addressId,'','','','');
     let addressKey = localStorage.key(i).split('__')[1]
     let addressValue = localStorage.getItem(localStorage.key(i));
     addressBook[addressId][addressKey] = addressValue;
@@ -348,55 +349,49 @@ function resetContacts() {
   $('#checkAll').prop('checked', false);
   resetSearch();
   for(let i  = 0; i<1; i++) {
-    addAddress('Cody','Codeworks', '+34 601 465 366', `Carrer d'Àvila, 27, 08005 Barcelona`);
-    addAddress('Cliff','Huxtable','+1 555 123456','10 Stigwood Avenue, New York City')
-    addAddress('Sirius','Black','+1 555 123489','12 Grimmauld Place, London, UK')
-    addAddress('Spongebob','Squarepants','+1 555 123522','124 Conch Street, Bikini Bottom, Pacific Ocean')
-    addAddress('Lily','Munster','+1 555 123555','1313 Mockingbird Lane, Mockingbird Heights, USA')
-    addAddress('Halliwell','House','+1 555 123588','1329 Carroll Ave, Los Angeles, California')
-    addAddress('Buffy','Summers','+1 555 123621','1630 Revello Drive, Sunnydale, CA')
-    addAddress('Doc','Brown','+1 555 123654','1640 Riverside Drive, Hill Valley, California')
-    addAddress('Sherlock','Holmes','+1 555 123687','221B Baker Street, London, UK')
-    addAddress('Fox','Mulder','+1 555 123720','2630 Hegal Place, Apt. 42, Alexandria, Virginia, 23242')
-    addAddress('Peter','Griffin','+1 555 123753','31 Spooner Street, Quahog, Rhode Island')
-    addAddress('Dana','Scully','+1 555 123786','3170 W. 53 Rd. #35, Annapolis, Maryland')
-    addAddress('Raymond','Barone','+1 555 123819','320 Fowler Street, Lynbrook, New York')
-    addAddress('Clark','Kent','+1 555 123852','344 Clinton St., Apt. 3B, Metropolis, USA')
-    addAddress('Dudley','Dursley','+1 555 123885','4 Privet Drive, Little Whinging, Surrey, UK')
-    addAddress('Tim','Taylor','+1 555 123918','510 Glenview, Detroit, Michigan')
-    addAddress('Jon','Arbuckle','+1 555 123951','711 Maple Street, USA')
-    addAddress('Roseanne','Conners','+1 555 123984','714 Delaware, Lanford IL')
-    addAddress('Al','Bundy','+1 555 124017','9764 Jeopardy Lane, Chicago, Illinois')
-    addAddress('Jerry','Seinfeld','+1 555 124050','Apartment 5A, 129 West 81st Street, New York, New York')
-    addAddress('Tyler','Durden','+1 555 124083','537 Paper Street, Bradford 19808 ')
-    addAddress('Homer','Simpson','+1 555 124116','742 Evergreen Terrace, Springfield')
-    addAddress('Kate','Tanner','+1 555 124149','167 Hemdale Street, Los Angeles, California ')
-    addAddress('Hercule','Poirot','+1 555 124182','Apt. 56B, Whitehaven Mansions, Sandhurst Square, London W1')
+    addAddress('Jane','Codeworks', '+34 601 465 366', `Carrer d'Àvila, 27, 08005 Barcelona`);
+    addAddress('Cliff','Huxtable','+1 555 123456','10 Stigwood Avenue, New York City');
+    addAddress('Sirius','Black','+1 555 123489','12 Grimmauld Place, London, UK');
+    addAddress('Spongebob','Squarepants','+1 555 123522','124 Conch Street, Bikini Bottom, Pacific Ocean');
+    addAddress('Herman','Munster','+1 555 123555','1313 Mockingbird Lane, Mockingbird Heights, USA');
+    addAddress('Doc','Brown','+1 555 123654','1640 Riverside Drive, Hill Valley, California');
+    addAddress('Sherlock','Holmes','+1 555 123687','221B Baker Street, London, UK');
+    addAddress('Fox','Mulder','+1 555 123720','2630 Hegal Place, Apt. 42, Alexandria, Virginia, 23242');
+    addAddress('Peter','Griffin','+1 555 123753','31 Spooner Street, Quahog, Rhode Island');
+    addAddress('Dana','Scully','+1 555 123786','3170 W. 53 Rd. #35, Annapolis, Maryland');
+    addAddress('Raymond','Barone','+1 555 123819','320 Fowler Street, Lynbrook, New York');
+    addAddress('Clark','Kent','+1 555 123852','344 Clinton St., Apt. 3B, Metropolis, USA');
+    addAddress('Dudley','Dursley','+1 555 123885','4 Privet Drive, Little Whinging, Surrey, UK');
+    addAddress('Tim','Taylor','+1 555 123918','510 Glenview, Detroit, Michigan');
+    addAddress('Jon','Arbuckle','+1 555 123951','711 Maple Street, USA');
+    addAddress('Roseanne','Conners','+1 555 123984','714 Delaware, Lanford IL');
+    addAddress('Al','Bundy','+1 555 124017','9764 Jeopardy Lane, Chicago, Illinois');
+    addAddress('Jerry','Seinfeld','+1 555 124050','Apartment 5A, 129 West 81st Street, New York, New York');
+    addAddress('Tyler','Durden','+1 555 124083','537 Paper Street, Bradford 19808 ');
+    addAddress('Homer','Simpson','+1 555 124116','742 Evergreen Terrace, Springfield');
+    addAddress('Kate','Tanner','+1 555 124149','167 Hemdale Street, Los Angeles, California ');
+    addAddress('Hercule','Poirot','+1 555 124182','Apt. 56B, Whitehaven Mansions, Sandhurst Square, London W1');
 
-    addAddress('Cody','Codeworks', '+34 601 465 366', `Carrer d'Àvila, 27, 08005 Barcelona`);
-    addAddress('Claire','Huxtable','+1 555 123456','10 Stigwood Avenue, New York City')
-    addAddress('Sirius','Black','+1 555 123489','12 Grimmauld Place, London, UK')
-    addAddress('Garry','Squarepants','+1 555 123522','124 Conch Street, Bikini Bottom, Pacific Ocean')
-    addAddress('Lily','Munster','+1 555 123555','1313 Mockingbird Lane, Mockingbird Heights, USA')
-    addAddress('Halliwell','House','+1 555 123588','1329 Carroll Ave, Los Angeles, California')
-    addAddress('Buffy','Summers','+1 555 123621','1630 Revello Drive, Sunnydale, CA')
-    addAddress('Doc','Brown','+1 555 123654','1640 Riverside Drive, Hill Valley, California')
-    addAddress('Dr.','Watson','+1 555 123687','221B Baker Street, London, UK')
-    addAddress('Fox','Mulder','+1 555 123720','2630 Hegal Place, Apt. 42, Alexandria, Virginia, 23242')
-    addAddress('Lois','Griffin','+1 555 123753','31 Spooner Street, Quahog, Rhode Island')
-    addAddress('Dana','Scully','+1 555 123786','3170 W. 53 Rd. #35, Annapolis, Maryland')
-    addAddress('Raymond','Barone','+1 555 123819','320 Fowler Street, Lynbrook, New York')
-    addAddress('Lois','Lane','+1 555 123852','344 Clinton St., Apt. 3B, Metropolis, USA')
-    addAddress('Harry','Potter','+1 555 123885','4 Privet Drive, Little Whinging, Surrey, UK')
-    addAddress('Jill','Taylor','+1 555 123918','510 Glenview, Detroit, Michigan')
-    addAddress('Jon','Arbuckle','+1 555 123951','711 Maple Street, USA')
-    addAddress('Roseanne','Conners','+1 555 123984','714 Delaware, Lanford IL')
-    addAddress('Peggy','Bundy','+1 555 124017','9764 Jeopardy Lane, Chicago, Illinois')
-    addAddress('Jerry','Seinfeld','+1 555 124050','Apartment 5A, 129 West 81st Street, New York, New York')
-    addAddress('Robert','Paulson','+1 555 124083','537 Paper Street, Bradford 19808 ')
-    addAddress('Marge','Simpson','+1 555 124116','742 Evergreen Terrace, Springfield')
-    addAddress('Willie','Tanner','+1 555 124149','167 Hemdale Street, Los Angeles, California ')
-    addAddress('Hercule','Poirot','+1 555 124182','Apt. 56B, Whitehaven Mansions, Sandhurst Square, London W1')
+    addAddress('John','Codeworks', '+34 601 465 366', `Carrer d'Àvila, 27, 08005 Barcelona`);
+    addAddress('Claire','Huxtable','+1 555 123456','10 Stigwood Avenue, New York City');
+    addAddress('Regulus','Black','+1 555 123489','12 Grimmauld Place, London, UK');
+    addAddress('Garry','Squarepants','+1 555 123522','124 Conch Street, Bikini Bottom, Pacific Ocean');
+    addAddress('Lily','Munster','+1 555 123555','1313 Mockingbird Lane, Mockingbird Heights, USA');
+    addAddress('Buffy','Summers','+1 555 123621','1630 Revello Drive, Sunnydale, CA');
+    addAddress('Dr.','Watson','+1 555 123687','221B Baker Street, London, UK');
+    addAddress('Lois','Griffin','+1 555 123753','31 Spooner Street, Quahog, Rhode Island');
+    addAddress('Debra','Barone','+1 555 123819','320 Fowler Street, Lynbrook, New York');
+    addAddress('Lois','Lane','+1 555 123852','344 Clinton St., Apt. 3B, Metropolis, USA');
+    addAddress('Harry','Potter','+1 555 123885','4 Privet Drive, Little Whinging, Surrey, UK');
+    addAddress('Jill','Taylor','+1 555 123918','510 Glenview, Detroit, Michigan');
+    addAddress('Garfield','Arbuckle','+1 555 123951','711 Maple Street, USA');
+    addAddress('Dan','Conners','+1 555 123984','714 Delaware, Lanford IL');
+    addAddress('Peggy','Bundy','+1 555 124017','9764 Jeopardy Lane, Chicago, Illinois');
+    addAddress('Cosmo','Cramer','+1 555 124050','Apartment 5A, 129 West 81st Street, New York, New York');
+    addAddress('Robert','Paulson','+1 555 124083','537 Paper Street, Bradford 19808 ');
+    addAddress('Marge','Simpson','+1 555 124116','742 Evergreen Terrace, Springfield');
+    addAddress('Willie','Tanner','+1 555 124149','167 Hemdale Street, Los Angeles, California ');
+    addAddress('Arthur','Hastings','+1 555 124182','Apt. 56B, Whitehaven Mansions, Sandhurst Square, London W1');
   }
   showContactList();
   showMessage('Dummy Adresses restored.')
