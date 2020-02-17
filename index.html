@@ -47,8 +47,6 @@
     </div>
   </div>
   <main>
-    <!-- <form id="newAddressForm">-->
-
     <div class="contentTable">
       <table id="contactList">
         <thead>
@@ -62,7 +60,7 @@
           </tr>
         </thead>
         <tbody>
-
+          <!-- this is where the contactlist will be rendered -->
         </tbody>
         <tfoot id="contactListFooter">
             <td>&nbsp;</td>
@@ -83,12 +81,6 @@
       </div>
       <div class="controlsRight">
         <button id="resetButton" title="Restore dummy dataset. All manually added contacts and applied changes will be lost.">Reset DB</button>
-        <!--
-        <button id="firstPageButton"><<</button>
-        <button id="previousPageButton"><</button>
-        <button id="nextPageButton">></button>
-        <button id="lastPageButton">>></button>
-      -->
       </div>
     </div>
   </main>
@@ -97,23 +89,5 @@
       (c) 2020 by Stefan Huckschlag
     </div>
   </footer>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      initApp();
-      // user interaction handling
-      $('#contactList').change(checkboxUpdate)
-      $('#searchfield').keyup(liveSearch);
-      $('#showInput').on('click', showContactInput);
-      $('#resetButton').on('click', resetContacts);
-      $('#deleteButton').on('click', deleteContacts);
-      $('#undoButton').on('click', undoDelete);
-      //$('#saveButton').on('click', saveChanges);
-      //$('#editContainer input[type=text]').keyup(saveChanges);
-      $('#contactListFooter input[type=text]').not('#searchfield').keyup(addContact);
-      $('.tableHeading').on('click', sortTable);
-
-      $(window).keyup(closeDialog);
-    });
-  </script>
 </body>
 </html>

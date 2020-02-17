@@ -17,14 +17,11 @@ Build a simple address book application using HTML, CSS, JavaScript and jQuery.
 - [x] sort contacts table by clicking on header (ascending /descending /original order)
 - [x] different viewports for different screens + print
 
-
-
 # ToDo
-
 
 ## Coding
 - [x] delete/undo from local storage
-- [x] add delete undo
+- [x] undo function
 - [x] edit single contacts
 - [x] use #confirmedMessage for all messages
 - [x] put all functions in script.js
@@ -34,7 +31,7 @@ Build a simple address book application using HTML, CSS, JavaScript and jQuery.
 ## Cleanup
 - [ ] order themed functions
 - [ ] order css
-- [ ] remove unused functions/vars...
+- [x] remove unused functions/vars...
 - [x] merge dev back to master
 - [x] add titles to buttons
 - [x] responsiveness
