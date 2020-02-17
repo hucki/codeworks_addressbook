@@ -130,6 +130,7 @@ function saveChanges() {
       localStorage.setItem(thisId+'__phone', addressBook[thisId]['phone'] = $('#editPhone').val());
       localStorage.setItem(thisId+'__address', addressBook[thisId]['address'] = $('#editAddress').val());
       $('#editModal').hide();
+      resetSearch();
       showContactList();
       showMessage('Changes saved!');
     }
@@ -251,7 +252,7 @@ function addressBookLength(whichAddressBook=addressBook) {
 
 function showMessage(text, type='Confirmation') {
   clearTimeout(messageTimeout);
-  let content = type === 'Alert' ? '&#x2757; ' + text :  text;
+  let content = type === 'Alert' ? '<span class="alertSymbol">&#x26A0;</span>&nbsp;' + text:  text; 
   $('#message').html(content).attr('style','width: '+(text.length*9)+'px').slideDown('slow');
   messageTimeout = setTimeout(function () {
     $('#message').slideUp();
